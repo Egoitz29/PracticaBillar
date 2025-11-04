@@ -21,7 +21,7 @@ public class BolaCollisionHandler : MonoBehaviour
         if (contadorRebotesAntesDeBlanca == null)
         {
             Debug.LogError("ContadorRebotesAntesDeBlanca no encontrado en " + gameObject.name);
-        }   
+        }
 
         bola = GetComponent<BolaFisica>();
         if (bola == null)
@@ -90,7 +90,7 @@ public class BolaCollisionHandler : MonoBehaviour
                 Debug.Log("Colision");
                 contadorRebotesAntesDeBlanca?.VerificarBolaBlanca(otraBola.gameObject);
             }
-            
+
         }
 
         // Colisión con bandas

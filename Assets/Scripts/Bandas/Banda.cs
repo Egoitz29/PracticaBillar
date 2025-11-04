@@ -11,7 +11,7 @@ public class Banda : MonoBehaviour
         Debug.Log("La bola ha colisionado");
         if (collision.gameObject.CompareTag("BolaBlanca"))
         {
-            Debug.Log("Ha pillado el tag" );
+            Debug.Log("Ha pillado el tag");
             AplicarComodines(collision.gameObject);
         }
     }

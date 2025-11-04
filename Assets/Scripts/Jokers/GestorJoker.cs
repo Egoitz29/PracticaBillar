@@ -1,51 +1,70 @@
-
-using UnityEngine;
+Ôªøusing UnityEngine;
 using System.Collections.Generic;
 
 public class JokerManager : MonoBehaviour
 {
     public List<Joker> jokersInicioRonda = new List<Joker>();
     public List<Joker> jokersFinalRonda = new List<Joker>();
-
+    public Transform zonaVisual; // un contenedor en la escena donde se ver√°n los jokers activos
+    public GameObject prefabIconoJoker; // un peque√±o icono para mostrar los activos
 
     public void ActivarJokersInicio(GameManager gameManager)
     {
         foreach (var joker in jokersInicioRonda)
         {
-            joker.AplicarEfecto(gameManager);
+            if (joker != null)
+                joker.AplicarEfecto(gameManager);
         }
     }
 
     public void ActivarJokersFinal(GameManager gameManager)
     {
-        for (int i = 0; i < jokersFinalRonda.Count; i++)
+        foreach (var joker in jokersFinalRonda)
         {
-            var joker = jokersFinalRonda[i];
-            if (joker == null)
-            {
-                Debug.LogWarning($"[JokerManager] Joker nulo en la lista de final de ronda en Ìndice {i}. Revisa la escena.");
-                continue;
-            }
-
-            joker.AplicarEfecto(gameManager);
+            if (joker != null)
+                joker.AplicarEfecto(gameManager);
         }
     }
 
-
     public void AddJokerInicio(Joker nuevo)
     {
-        jokersInicioRonda.Add(nuevo);
-        // PodrÌas lanzar un evento o actualizar UI aquÌ
+        if (nuevo != null)
+        {
+            jokersInicioRonda.Add(nuevo);
+            ActualizarVisual();
+        }
     }
 
     public void AddJokerFinal(Joker nuevo)
     {
-        if (nuevo == null)
+        if (nuevo != null)
         {
-            Debug.LogWarning("Se intentÛ aÒadir un Joker FINAL nulo.");
-            return;
+            jokersFinalRonda.Add(nuevo);
+            ActualizarVisual();
         }
-        jokersFinalRonda.Add(nuevo);
     }
 
+    // ‚úÖ Actualiza visualmente los jokers activos
+    public void ActualizarVisual()
+    {
+        if (zonaVisual == null || prefabIconoJoker == null)
+        {
+            Debug.LogWarning("‚ö†Ô∏è Falta asignar zonaVisual o prefabIconoJoker en JokerManager.");
+            return;
+        }
+
+        foreach (Transform hijo in zonaVisual)
+            Destroy(hijo.gameObject);
+
+        foreach (var joker in jokersInicioRonda)
+        {
+            if (joker != null)
+            {
+                var icono = Instantiate(prefabIconoJoker, zonaVisual);
+                var img = icono.GetComponent<UnityEngine.UI.Image>();
+                if (img != null && joker.icono != null)
+                    img.sprite = joker.icono;
+            }
+        }
+    }
 }

@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
@@ -7,44 +7,27 @@ public class UIManager : MonoBehaviour
     [Header("Referencias UI")]
     public TextMeshProUGUI textoPuntosMeta;
     public TextMeshProUGUI textoPuntosAcumulados;
-    public TextMeshProUGUI textoPuntosTurno;
+    public TextMeshProUGUI textoPuntosTurno;   // si no lo usas, puedes ocultarlo
     public TextMeshProUGUI textoTirosRestantes;
-    public TextMeshProUGUI textoRondaActual;
+    public TextMeshProUGUI textoRondaActual;   // si no lo usas, puedes ocultarlo
     public TextMeshProUGUI textoOro;
     public Button botonOpciones;
 
-    // Estado del juego (puedes pasar esto desde otro controlador)
-    public int puntosMeta;
-    public int puntosAcumulados;
-    public int puntosTurno;
-    public int tirosRestantes;
-    public int rondaActual;
-    public int oro;
-
     void Start()
     {
-        botonOpciones.onClick.AddListener(AbrirMenuOpciones);
-        ActualizarHUD();
-    }
-
-    void Update()
-    {
-        ActualizarHUD();
+        if (botonOpciones) botonOpciones.onClick.AddListener(() => Debug.Log("MenÃº opciones"));
+        ActualizarHUD(); // primer pintado
     }
 
     public void ActualizarHUD()
     {
-        textoPuntosMeta.text = "Meta: " + puntosMeta;
-        textoPuntosAcumulados.text = "Acumulados: " + puntosAcumulados;
-        textoPuntosTurno.text = "Turno: " + puntosTurno;
-        textoTirosRestantes.text = "Tiros: " + tirosRestantes;
-        textoRondaActual.text = "Ronda: " + rondaActual;
-        textoOro.text = "Oro: " + oro;
-    }
+        var gm = GameManager.Instance;
+        if (gm == null) return;
 
-    void AbrirMenuOpciones()
-    {
-        Debug.Log("Menú de opciones abierto");
-        //Añadir menu opciones
+        if (textoPuntosMeta) textoPuntosMeta.text = "Meta: " + gm.puntosRequeridos;
+        if (textoPuntosAcumulados) textoPuntosAcumulados.text = "Puntos: " + gm.puntosJugador;
+        if (textoTirosRestantes) textoTirosRestantes.text = "Tiros: " + gm.tirosRestantes;
+        if (textoOro) textoOro.text = "Oro: " + gm.Oro;
+        // textoPuntosTurno / textoRondaActual: pinta lo que uses realmente
     }
 }

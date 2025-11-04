@@ -10,6 +10,8 @@ TagManager:
   - Panel1
   - Panel2
   - BandaMultiplicadora
+  - ZonaVenta
+  - SlotInventario
   layers:
   - Default
   - TransparentFX

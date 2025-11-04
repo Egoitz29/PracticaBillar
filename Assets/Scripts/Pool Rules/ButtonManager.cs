@@ -4,12 +4,10 @@ using System.Linq;
 public class ButtonManager : MonoBehaviour
 {
     private GameObject panel1;
-    private GameObject panel2;
     private GameObject bolaColor;
     private GameObject bolaColorPosition;
     private GameObject bolaBlanca;
     private GameObject bolaBlancaPosition;
-
     private GameManager gameManager;
 
     void Start()
@@ -17,59 +15,45 @@ public class ButtonManager : MonoBehaviour
         ReasignarVariables();
     }
 
-    public void MostrarPanel2()
+    public void ContinuarDesdeTienda()
     {
-        Debug.Log("✅ Botón 'Next Level' pulsado: ejecutando MostrarPanel2()");
+        Debug.Log("✅ [ButtonManager] Continuar desde tienda pulsado.");
 
         if (panel1 != null)
         {
-            Debug.Log("Ocultando Panel1: " + panel1.name);
             panel1.SetActive(false);
-        }
-        else
-        {
-            Debug.LogWarning("⚠️ Panel1 es NULL");
+            Debug.Log("🛒 Tienda cerrada.");
         }
 
-        if (panel2 != null)
-        {
-            Debug.Log("Mostrando Panel2: " + panel2.name);
-            panel2.SetActive(true);
-        }
-        else
-        {
-            Debug.LogWarning("⚠️ Panel2 es NULL");
-        }
+        ReiniciarPosiciones();
+
+        gameManager = GameManager.Instance;
+        if (gameManager == null) { Debug.LogWarning("⚠️ GameManager no encontrado."); return; }
+
+        gameManager.SiguienteNivel();
     }
 
     public void MostrarPanel1()
     {
-        if (panel1 != null) panel1.SetActive(true);
-    }
-
-    public void SiguienteNivel()
-    {
-        if (panel2 != null) panel2.SetActive(false);
-        gameManager.SiguienteNivel();
+        StopAllMotion();
+        if (panel1 != null)
+        {
+            panel1.SetActive(true);
+            gameManager.tirosRestantes = 3; // Reinicia siempre a 3 al abrir tienda
+            gameManager.uiManager?.ActualizarHUD();
+        }
     }
 
     public void ReasignarVariables()
     {
         gameManager = GetComponent<GameManager>();
-
         panel1 = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(obj => obj.name == "Panel1 (Tienda)");
-        panel2 = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(obj => obj.name == "Panel2 (Niveles)");
         bolaColor = GameObject.Find("Bola Color");
         bolaColorPosition = GameObject.Find("Bola Color Posicion");
         bolaBlanca = GameObject.Find("Bola Blanca");
         bolaBlancaPosition = GameObject.Find("Bola Blanca Posicion");
 
-        if (panel1 != null) panel1.SetActive(false); else Debug.LogWarning("Panel1 no encontrado");
-        if (panel2 != null) panel2.SetActive(false); else Debug.LogWarning("Panel2 no encontrado");
-        if (bolaColor == null) Debug.LogWarning("BolaColor no encontrado");
-        if (bolaColorPosition == null) Debug.LogWarning("BolaColorPosition no encontrado");
-        if (bolaBlanca == null) Debug.LogWarning("BolaBlanca no encontrado");
-        if (bolaBlancaPosition == null) Debug.LogWarning("BolaBlancaPosition no encontrado");
+        if (panel1 != null) panel1.SetActive(false);
     }
 
     public void ReiniciarPosiciones()
@@ -80,11 +64,17 @@ public class ButtonManager : MonoBehaviour
         if (bolaBlanca != null && bolaBlancaPosition != null)
             bolaBlanca.transform.position = bolaBlancaPosition.transform.position;
 
-        // Si hay rigidbody o física:
-        Rigidbody2D rbColor = bolaColor?.GetComponent<Rigidbody2D>();
-        if (rbColor != null) rbColor.linearVelocity = Vector2.zero;
+        StopAllMotion();
+    }
 
-        Rigidbody2D rbBlanca = bolaBlanca?.GetComponent<Rigidbody2D>();
-        if (rbBlanca != null) rbBlanca.linearVelocity = Vector2.zero;
+    private void StopAllMotion()
+    {
+        var all = FindObjectsOfType<Rigidbody2D>();
+        foreach (var rb in all)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            rb.Sleep();
+        }
     }
 }

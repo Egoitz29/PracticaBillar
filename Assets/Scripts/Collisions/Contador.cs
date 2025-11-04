@@ -1,83 +1,86 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
+using TMPro;
 
-// Este script se coloca en cada bola del jugador. 
-// Se encarga de contar los rebotes que hace una bola ANTES de tocar la bola blanca,
-// y proporciona datos al GameManager para calcular los puntos al final del turno.
 public class ContadorRebotesAntesDeBlanca : MonoBehaviour
 {
-    public string tagBolaBlanca = "BolaBlanca"; // El tag que identifica a la bola blanca (para detecciÛn de colisiÛn)
-
-    // Cantidad de rebotes antes de tocar la bola blanca
+    public string tagBolaBlanca = "BolaBlanca";
     public int rebotes { get; set; } = 0;
-
-    // True si la bola ha tocado la blanca (solo se marca una vez)
     public bool haTocadoBlanca { get; private set; } = false;
-
-    // True si la bola se ha lanzado (es decir, si empezÛ a moverse)
     public bool haSidoLanzada { get; private set; } = false;
 
-    private BolaFisica bolaFisica; // Referencia al script que controla el movimiento de esta bola
+    private BolaFisica bolaFisica;
+    private TextMeshPro textoDebug; // üëà nuevo texto visible en el juego
 
-  
-    // Se ejecuta al iniciar el juego o al activarse el objeto
     void Start()
     {
-        // Busca el componente BolaFisica en la misma bola
         bolaFisica = GetComponent<BolaFisica>();
-
-        // Si no lo encuentra, lanza un error y desactiva este script
         if (bolaFisica == null)
         {
             Debug.LogError("BolaFisica no encontrada en " + gameObject.name);
             enabled = false;
         }
+
+        // üßæ Crear texto de depuraci√≥n en tiempo real
+        GameObject textoObj = new GameObject("TextoRebotes_" + gameObject.name);
+        textoObj.transform.SetParent(transform);
+        textoObj.transform.localPosition = new Vector3(0, 1.2f, 0); // encima de la bola
+
+        textoDebug = textoObj.AddComponent<TextMeshPro>();
+        textoDebug.fontSize = 3f;
+        textoDebug.alignment = TextAlignmentOptions.Center;
+        textoDebug.color = Color.yellow;
+        textoDebug.text = "Rebotes: 0";
     }
 
-    // Se ejecuta una vez por frame
     void Update()
     {
-        // Si la bola empieza a moverse por primera vez, se marca como lanzada
         if (bolaFisica.EstaEnMovimiento && !haSidoLanzada)
-        {
             haSidoLanzada = true;
-           
-        }
-        if (bolaFisica.EstaEnMovimiento)
+
+        // üß† Actualizar texto constantemente
+        if (textoDebug != null)
         {
-            Debug.Log("Rebotes:" + rebotes);
+            textoDebug.text = $"Rebotes: {rebotes}";
         }
-      
     }
 
-    // Llamado desde otro script (como BolaCollisionHandler) cuando se detecta un rebote
     public void ContarRebote()
     {
-        // Solo cuenta rebotes si la bola ya ha sido lanzada y a˙n no ha tocado la blanca
         if (haSidoLanzada && !haTocadoBlanca)
-            rebotes++;
+        {
+            int valorRebote = 1;
+
+            // üÉè Si el jugador tiene el comod√≠n Doble Puntos activo, cada rebote vale 2
+            var inventario = FindObjectOfType<InventarioJokerManager>();
+            if (inventario != null)
+            {
+                foreach (var joker in inventario.ObtenerInventario())
+                {
+                    if (joker != null && joker.tipoEfecto == Joker1.TipoEfecto.DoblePuntos)
+                    {
+                        valorRebote = 2;
+                        break;
+                    }
+                }
+            }
+
+            rebotes += valorRebote;
+            Debug.Log($"üü° {gameObject.name} ‚Üí Rebote +{valorRebote} (Total: {rebotes})");
+        }
     }
 
-    // Llamado cuando esta bola colisiona con otra para verificar si es la blanca
     public void VerificarBolaBlanca(GameObject otraBola)
     {
-        // Si a˙n no ha tocado la blanca y la bola con la que colisiona tiene el tag adecuado
         if (!haTocadoBlanca && otraBola.CompareTag(tagBolaBlanca))
-            haTocadoBlanca = true; // Se marca como que ha tocado la bola blanca
+            haTocadoBlanca = true;
     }
 
-    // Devuelve true si la bola est· completamente detenida (sin moverse)
-    public bool EstaQuieto()
-    {
-        return !bolaFisica.EstaEnMovimiento;
-    }
+    public bool EstaQuieto() => !bolaFisica.EstaEnMovimiento;
 
-    // Reinicia todos los valores para que la bola estÈ lista para el prÛximo turno
     public void Resetear()
     {
         rebotes = 0;
         haTocadoBlanca = false;
         haSidoLanzada = false;
     }
-
-   
 }
