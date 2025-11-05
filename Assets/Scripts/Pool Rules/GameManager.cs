@@ -32,7 +32,6 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
 
         bolas = FindObjectsOfType<ContadorRebotesAntesDeBlanca>();
         buttonManager = GetComponent<ButtonManager>();
@@ -41,8 +40,7 @@ public class GameManager : MonoBehaviour
         ReiniciarEstado();
         ActualizarUI();
 
-        //  Nos suscribimos al evento de carga de escena
-        SceneManager.sceneLoaded += OnSceneLoaded;
+
     }
 
     private void Update()
@@ -225,14 +223,5 @@ public class GameManager : MonoBehaviour
             uiManager.ActualizarHUD();
     }
 
-    //  Este método se ejecuta cada vez que se carga una nueva escena
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        // Si la escena es GameOver, destruimos el GameManager
-        if (scene.name == "GameOver")
-        {
-            Debug.Log(" GameOver detectado → destruyendo GameManager...");
-            Destroy(gameObject);
-        }
-    }
+
 }

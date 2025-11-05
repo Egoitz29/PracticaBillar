@@ -68,7 +68,7 @@ public class BolaDisparo : MonoBehaviour
             bola.AplicarVelocidad(direccion * distancia * fuerzaDisparo);
 
             gameManager.tirosRestantes--;   
-
+            
             Debug.Log(gameManager.tirosRestantes + " tiros restantes.");
 
         }

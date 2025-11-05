@@ -28,10 +28,10 @@ public class GameOverUI : MonoBehaviour
         Debug.Log(" Reiniciando partida desde GameOver...");
 
         //  1. Destruye el GameManager si aún existe
-        if (GameManager.Instance != null)
-        {
-            Destroy(GameManager.Instance.gameObject);
-        }
+        //if (GameManager.Instance != null)
+        //{
+        //    Destroy(GameManager.Instance.gameObject);
+        //}
 
         //  2. Recarga la escena principal del juego desde cero
         SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
