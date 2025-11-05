@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
 
     public ButtonManager buttonManager;
     public UIManager uiManager;
-    public int Oro = 10;
+    public int Oro = 0;
 
     private JokerManager jokerManager;
     private ContadorRebotesAntesDeBlanca[] bolas;
@@ -73,10 +73,23 @@ public class GameManager : MonoBehaviour
 
         if (puntosJugador >= puntosRequeridos)
         {
-            buttonManager.MostrarPanel1();
+            // ⬆️ SUBE LA META AL ALCANZAR EL OBJETIVO
+            puntosRequeridos += 2;
+
+            // 🔄 RESETEA LOS VALORES
             puntosJugador = 0;
-            ReiniciarTiros(); //  Reinicia los tiros al abrir tienda
+            ReiniciarTiros();
+
+            // 🧠 REFRESCA EL HUD
+            uiManager?.ActualizarHUD();
+
+            // 🛒 ABRE LA TIENDA
+            buttonManager.MostrarPanel1();
+
+            Debug.Log($"🎯 Meta alcanzada → nueva meta: {puntosRequeridos}");
         }
+
+
 
         ActualizarUI();
     }
@@ -97,15 +110,30 @@ public class GameManager : MonoBehaviour
 
     public void ReiniciarTiros()
     {
+        // 🎯 Reinicia los tiros base
         tirosRestantes = 3;
-        Debug.Log(" Tiros reiniciados a 3 (al abrir tienda).");
+        Debug.Log("🎯 Tiros reiniciados a 3 (inicio de ronda o al abrir tienda).");
+
+        // 🧠 Si hay comodín de +1 Tiro, se aplica automáticamente
+        var inventario = FindObjectOfType<InventarioJokerManager>();
+        if (inventario != null)
+        {
+            foreach (var joker in inventario.ObtenerInventario())
+            {
+                if (joker.tipoEfecto == Joker1.TipoEfecto.MasTiro)
+                {
+                    tirosRestantes += 1;
+                    Debug.Log($"✨ [{joker.nombre}] activo → +1 tiro extra (total: {tirosRestantes})");
+                }
+            }
+        }
+
         ActualizarUI();
     }
 
     public void SiguienteNivel()
     {
         puntosJugador = 0;
-        puntosRequeridos += 2;
 
         buttonManager.ReiniciarPosiciones();
         jokerManager?.ActualizarVisual();
@@ -114,6 +142,7 @@ public class GameManager : MonoBehaviour
 
         Debug.Log(" Nueva ronda iniciada.");
     }
+
 
     public void AddTiros(int cantidad)
     {
@@ -132,11 +161,11 @@ public class GameManager : MonoBehaviour
         }
         return true;
     }
-
     void CalcularPuntosTurno()
     {
         int puntosGanados = 0;
 
+        // 🟡 Sumamos todos los rebotes de las bolas que tocaron la blanca
         foreach (var bola in bolas)
         {
             if (bola.haTocadoBlanca)
@@ -148,17 +177,39 @@ public class GameManager : MonoBehaviour
         puntosJugador += puntosGanados;
         puntosCalculados = true;
 
-        Debug.Log($" Turno completado → Rebotes totales: {puntosGanados}, Puntos acumulados: {puntosJugador}, Meta: {puntosRequeridos}");
-
         uiManager?.ActualizarHUD();
 
+        // 🏁 Si alcanza o supera la meta
         if (puntosJugador >= puntosRequeridos)
         {
-            Debug.Log(" Meta alcanzada o superada → abriendo tienda...");
-            buttonManager.MostrarPanel1();
+            // 💰 Calculamos oro ganado = rebotes + tiros restantes
+            int oroGanado = Mathf.Max(1, puntosGanados + tirosRestantes);
+
+            // 🔹 Sumamos al total
+            Oro += oroGanado;
+
+            // 🧠 Log bonito
+            Debug.Log($"💰 Meta alcanzada: {puntosGanados} rebotes + {tirosRestantes} tiros restantes → +{oroGanado} oro. Total: {Oro}");
+
+            // 🔹 Subimos la meta base +2 (como antes)
+            puntosRequeridos += 2;
+
+            // 🔄 Reiniciamos jugador y tiros (base)
             puntosJugador = 0;
+            ReiniciarTiros();
+
+            // 🧠 Aplica efectos activos del inventario (como +1 Tiro o -1 Meta)
+            FindObjectOfType<InventarioJokerManager>()?.AplicarEfectosActivosAlInicio();
+
+            // 🧾 Actualizamos interfaz
+            uiManager?.ActualizarHUD();
+
+            // 🛒 Abrimos la tienda
+            buttonManager.MostrarPanel1();
         }
     }
+
+
 
     public void EmpezarNuevoTurno()
     {

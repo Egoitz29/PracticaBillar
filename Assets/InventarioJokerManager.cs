@@ -115,6 +115,13 @@ public class InventarioJokerManager : MonoBehaviour
                 Debug.Log("🎯 [+1 Tiro] aplicado al COMPRAR. Tiros ahora: " + gm.tirosRestantes);
                 break;
 
+            case Joker1.TipoEfecto.MenosMeta:
+                gm.puntosRequeridos = Mathf.Max(1, gm.puntosRequeridos - 1);
+                Debug.Log($"🎯 [Menos Meta] aplicado → Nueva meta: {gm.puntosRequeridos}");
+                gm.uiManager?.ActualizarHUD();
+                break;
+
+
             case Joker1.TipoEfecto.DoblePuntos:
                //m.MultiplicarPuntaje(2f);
                 Debug.Log("💥 [Doble Puntos] aplicado al COMPRAR. Puntos: " + gm.puntosJugador);
@@ -135,6 +142,45 @@ public class InventarioJokerManager : MonoBehaviour
 
         gm.uiManager?.ActualizarHUD();
     }
+
+    private void QuitarEfectoDirecto(Joker1 joker)
+    {
+        GameManager gm = GameManager.Instance;
+        if (gm == null || joker == null) return;
+
+        switch (joker.tipoEfecto)
+        {
+            case Joker1.TipoEfecto.MasTiro:
+                gm.AddTiros(-1);
+                Debug.Log("🎯 [-1 Tiro] al vender. Tiros ahora: " + gm.tirosRestantes);
+                break;
+
+            case Joker1.TipoEfecto.MenosMeta:
+                gm.puntosRequeridos += 1;
+                Debug.Log($"🎯 [Menos Meta] eliminado → Nueva meta: {gm.puntosRequeridos}");
+                gm.uiManager?.ActualizarHUD();
+                break;
+
+            case Joker1.TipoEfecto.DoblePuntos:
+                Debug.Log("💥 [Doble Puntos] desactivado al vender (pendiente de lógica).");
+                break;
+
+            case Joker1.TipoEfecto.BolaFantasma:
+                Debug.Log("👻 [Bola Fantasma] desactivada (pendiente de lógica).");
+                break;
+
+            case Joker1.TipoEfecto.EscudoRebote:
+                Debug.Log("🛡️ [Escudo de Rebote] desactivado (pendiente de lógica).");
+                break;
+
+            default:
+                Debug.Log("ℹ️ [" + joker.nombre + "] sin efecto que revertir.");
+                break;
+        }
+
+        gm.uiManager?.ActualizarHUD();
+    }
+
 
     public void VenderJoker(Joker1 joker)
     {
@@ -161,6 +207,8 @@ public class InventarioJokerManager : MonoBehaviour
         if (shop != null) shop.ActualizarOro(+joker.precioVenta);
 
         Debug.Log("🗑️ Vendido '" + joker.nombre + "'. Oro actual: " + GameManager.Instance.Oro);
+        QuitarEfectoDirecto(joker);
+
     }
 
     public List<Joker1> ObtenerInventario() => inventario;
@@ -179,4 +227,38 @@ public class InventarioJokerManager : MonoBehaviour
         }
         rt.localScale = target;
     }
+    // 🔹 Aplica efectos pasivos como MenosMeta o MasTiro al inicio de cada ronda
+    public void AplicarEfectosActivosAlInicio()
+    {
+        var gm = GameManager.Instance;
+        if (gm == null) return;
+
+        foreach (var joker in inventario)
+        {
+            switch (joker.tipoEfecto)
+            {
+                case Joker1.TipoEfecto.MasTiro:
+                    gm.AddTiros(1);
+                    Debug.Log($"🎯 [{joker.nombre}] aplicado → +1 tiro (total: {gm.tirosRestantes})");
+                    break;
+
+                case Joker1.TipoEfecto.MenosMeta:
+                    if (gm.puntosRequeridos > 1)
+                    {
+                        gm.puntosRequeridos -= 1;
+                        Debug.Log($"🎯 [{joker.nombre}] aplicado → meta reducida a {gm.puntosRequeridos}");
+
+                        // 💫 Efecto visual del HUD
+                        gm.StartCoroutine(gm.uiManager.ParpadeoMetaVerde());
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        gm.uiManager?.ActualizarHUD();
+    }
+
 }

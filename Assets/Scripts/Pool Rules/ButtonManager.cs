@@ -28,10 +28,15 @@ public class ButtonManager : MonoBehaviour
         ReiniciarPosiciones();
 
         gameManager = GameManager.Instance;
-        if (gameManager == null) { Debug.LogWarning("⚠️ GameManager no encontrado."); return; }
+        if (gameManager == null)
+        {
+            Debug.LogWarning("⚠️ GameManager no encontrado.");
+            return;
+        }
 
         gameManager.SiguienteNivel();
     }
+
 
     public void MostrarPanel1()
     {

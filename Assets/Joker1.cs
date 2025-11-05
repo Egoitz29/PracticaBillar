@@ -10,7 +10,7 @@ public class Joker1 : ScriptableObject
     public int precioVenta;
     [TextArea] public string descripcion;
 
-    public enum TipoEfecto { Ninguno, MasTiro, DoblePuntos, BolaFantasma, EscudoRebote }
+    public enum TipoEfecto { Ninguno, MasTiro, DoblePuntos, BolaFantasma, EscudoRebote, MenosMeta }
     [Header("Tipo de efecto")] public TipoEfecto tipoEfecto = TipoEfecto.Ninguno;
 
     /// <summary>
