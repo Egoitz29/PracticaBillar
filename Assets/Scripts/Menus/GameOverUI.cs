@@ -34,7 +34,7 @@ public class GameOverUI : MonoBehaviour
         //}
 
         //  2. Recarga la escena principal del juego desde cero
-        SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+        SceneManager.LoadScene("Juego1", LoadSceneMode.Single);
 
         Debug.Log(" Juego reiniciado completamente.");
     }
@@ -52,6 +52,6 @@ public class GameOverUI : MonoBehaviour
             Destroy(GameManager.Instance.gameObject);
         }
 
-        SceneManager.LoadScene("MenuPrincipal", LoadSceneMode.Single);
+        SceneManager.LoadScene("Menu", LoadSceneMode.Single);
     }
 }
