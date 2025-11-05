@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -39,6 +40,9 @@ public class GameManager : MonoBehaviour
 
         ReiniciarEstado();
         ActualizarUI();
+
+        //  Nos suscribimos al evento de carga de escena
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void Update()
@@ -59,11 +63,19 @@ public class GameManager : MonoBehaviour
             ReiniciarRonda();
         }
 
+        //  Nueva condición: sin tiros, bolas quietas y sin haber llegado a la meta → GameOver
+        if (tirosRestantes <= 0 && TodasLasBolasQuietas() && puntosJugador < puntosRequeridos)
+        {
+            Debug.Log(" Sin tiros y sin alcanzar la meta → Cargando escena GameOver...");
+            SceneManager.LoadScene("GameOver");
+            return;
+        }
+
         if (puntosJugador >= puntosRequeridos)
         {
             buttonManager.MostrarPanel1();
             puntosJugador = 0;
-            ReiniciarTiros(); // 🟩 Reinicia los tiros al abrir tienda
+            ReiniciarTiros(); //  Reinicia los tiros al abrir tienda
         }
 
         ActualizarUI();
@@ -86,7 +98,7 @@ public class GameManager : MonoBehaviour
     public void ReiniciarTiros()
     {
         tirosRestantes = 3;
-        Debug.Log("🎯 Tiros reiniciados a 3 (al abrir tienda).");
+        Debug.Log(" Tiros reiniciados a 3 (al abrir tienda).");
         ActualizarUI();
     }
 
@@ -100,14 +112,14 @@ public class GameManager : MonoBehaviour
 
         uiManager.ActualizarHUD();
 
-        Debug.Log("🚀 Nueva ronda iniciada.");
+        Debug.Log(" Nueva ronda iniciada.");
     }
 
     public void AddTiros(int cantidad)
     {
         tirosRestantes += cantidad;
         if (tirosRestantes < 0) tirosRestantes = 0;
-        Debug.Log($"🎯 Tiros restantes: {tirosRestantes}");
+        Debug.Log($" Tiros restantes: {tirosRestantes}");
         ActualizarUI();
     }
 
@@ -120,6 +132,7 @@ public class GameManager : MonoBehaviour
         }
         return true;
     }
+
     void CalcularPuntosTurno()
     {
         int puntosGanados = 0;
@@ -135,19 +148,17 @@ public class GameManager : MonoBehaviour
         puntosJugador += puntosGanados;
         puntosCalculados = true;
 
-        Debug.Log($"🎯 Turno completado → Rebotes totales: {puntosGanados}, Puntos acumulados: {puntosJugador}, Meta: {puntosRequeridos}");
+        Debug.Log($" Turno completado → Rebotes totales: {puntosGanados}, Puntos acumulados: {puntosJugador}, Meta: {puntosRequeridos}");
 
         uiManager?.ActualizarHUD();
 
         if (puntosJugador >= puntosRequeridos)
         {
-            Debug.Log("🏁 Meta alcanzada o superada → abriendo tienda...");
+            Debug.Log(" Meta alcanzada o superada → abriendo tienda...");
             buttonManager.MostrarPanel1();
             puntosJugador = 0;
         }
     }
-
-
 
     public void EmpezarNuevoTurno()
     {
@@ -161,5 +172,16 @@ public class GameManager : MonoBehaviour
     {
         if (uiManager != null)
             uiManager.ActualizarHUD();
+    }
+
+    //  Este método se ejecuta cada vez que se carga una nueva escena
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Si la escena es GameOver, destruimos el GameManager
+        if (scene.name == "GameOver")
+        {
+            Debug.Log(" GameOver detectado → destruyendo GameManager...");
+            Destroy(gameObject);
+        }
     }
 }

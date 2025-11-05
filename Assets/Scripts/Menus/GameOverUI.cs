@@ -2,46 +2,56 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-// Este script gestiona los botones y acciones de la escena GameOver
 public class GameOverUI : MonoBehaviour
 {
     [Header("Botones de la UI")]
     public Button botonReintentar;   // Botón para reiniciar la partida
-    public Button botonSalirMenu;    // Botón para volver al menú principal (si lo tienes)
+    public Button botonSalirMenu;    // Botón para volver al menú principal
 
     private void Start()
     {
-        // Asignamos las funciones a los botones si existen
+        // Asignamos las funciones a los botones
         if (botonReintentar != null)
             botonReintentar.onClick.AddListener(ReiniciarPartida);
 
         if (botonSalirMenu != null)
             botonSalirMenu.onClick.AddListener(VolverAlMenu);
+
+        Debug.Log(" GameOverUI listo.");
     }
 
     /// <summary>
-    /// Reinicia completamente la partida y vuelve a cargar la escena principal del juego.
+    /// Reinicia completamente el juego, eliminando el GameManager y recargando la escena principal.
     /// </summary>
     public void ReiniciarPartida()
     {
         Debug.Log(" Reiniciando partida desde GameOver...");
 
-        //  Antes de cargar la escena, reiniciamos el estado del GameManager
+        //  1. Destruye el GameManager si aún existe
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.ReiniciarEstado();
+            Destroy(GameManager.Instance.gameObject);
         }
 
-        // Carga la escena principal (asegúrate de que el nombre coincide)
-        SceneManager.LoadScene("SampleScene");
+        //  2. Recarga la escena principal del juego desde cero
+        SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+
+        Debug.Log(" Juego reiniciado completamente.");
     }
 
     /// <summary>
-    /// Vuelve al menú principal (si tienes una escena de menú).
+    /// Carga el menú principal.
     /// </summary>
     public void VolverAlMenu()
     {
         Debug.Log(" Volviendo al menú principal...");
-        SceneManager.LoadScene("MenuPrincipal"); // Cambia el nombre por el de tu menú si es distinto
+
+        // Limpia el GameManager si existe
+        if (GameManager.Instance != null)
+        {
+            Destroy(GameManager.Instance.gameObject);
+        }
+
+        SceneManager.LoadScene("MenuPrincipal", LoadSceneMode.Single);
     }
 }
