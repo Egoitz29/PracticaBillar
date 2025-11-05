@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Linq;
 
 public class ButtonManager : MonoBehaviour
@@ -10,9 +11,56 @@ public class ButtonManager : MonoBehaviour
     private GameObject bolaBlancaPosition;
     private GameManager gameManager;
 
+    [Header("Panel del menú")]
+    public GameObject panelMenuExtra;
+
     void Start()
     {
         ReasignarVariables();
+
+        if (panelMenuExtra != null)
+            panelMenuExtra.SetActive(false);
+    }
+
+    // ✅ Botón "Juego 1"
+    public void CargarJuego1()
+    {
+        Debug.Log("🎮 Cargando escena: Juego1...");
+        SceneManager.LoadScene("Juego1");
+    }
+
+    // ✅ Botón "Opciones"
+    public void BotonOpciones()
+    {
+        if (panelMenuExtra == null)
+        {
+            Debug.LogWarning("⚠️ PanelMenuExtra no asignado en el inspector.");
+            return;
+        }
+
+        bool nuevoEstado = !panelMenuExtra.activeSelf;
+        panelMenuExtra.SetActive(nuevoEstado);
+        Debug.Log(nuevoEstado ? "📜 Panel de opciones abierto." : "❌ Panel de opciones cerrado.");
+    }
+
+    // ✅ Botón "Cerrar panel" dentro de las opciones
+    public void CerrarPanelOpciones()
+    {
+        if (panelMenuExtra == null)
+        {
+            Debug.LogWarning("⚠️ PanelMenuExtra no asignado en el inspector.");
+            return;
+        }
+
+        panelMenuExtra.SetActive(false);
+        Debug.Log("❌ Panel de opciones cerrado manualmente.");
+    }
+
+    // ✅ Botón "Volver" dentro del panel
+    public void VolverAlMenu()
+    {
+        Debug.Log("🔙 Volviendo al menú principal...");
+        SceneManager.LoadScene("Menu"); // Cambia por el nombre exacto de tu escena de menú
     }
 
     public void ContinuarDesdeTienda()
@@ -37,14 +85,13 @@ public class ButtonManager : MonoBehaviour
         gameManager.SiguienteNivel();
     }
 
-
     public void MostrarPanel1()
     {
         StopAllMotion();
         if (panel1 != null)
         {
             panel1.SetActive(true);
-            gameManager.tirosRestantes = 3; // Reinicia siempre a 3 al abrir tienda
+            gameManager.tirosRestantes = 3;
             gameManager.uiManager?.ActualizarHUD();
         }
     }
