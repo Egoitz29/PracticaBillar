@@ -22,6 +22,8 @@ public class GameManager : MonoBehaviour
     private JokerManager jokerManager;
     private ContadorRebotesAntesDeBlanca[] bolas;
     private bool puntosCalculados = true;
+    public GameObject panelJuego; // o el nombre que tú uses
+
 
     private void Awake()
     {
@@ -186,25 +188,26 @@ public class GameManager : MonoBehaviour
             // 🔹 Sumamos al total
             Oro += oroGanado;
 
-            // 🧠 Log bonito
             Debug.Log($"💰 Meta alcanzada: {puntosGanados} rebotes + {tirosRestantes} tiros restantes → +{oroGanado} oro. Total: {Oro}");
 
-            // 🔹 Subimos la meta base +2 (como antes)
             puntosRequeridos += 2;
-
-            // 🔄 Reiniciamos jugador y tiros (base)
             puntosJugador = 0;
             ReiniciarTiros();
 
-            // 🧠 Aplica efectos activos del inventario (como +1 Tiro o -1 Meta)
             FindObjectOfType<InventarioJokerManager>()?.AplicarEfectosActivosAlInicio();
-
-            // 🧾 Actualizamos interfaz
             uiManager?.ActualizarHUD();
 
-            // 🛒 Abrimos la tienda
+            // 🧩 Desactiva el panel del juego antes de abrir la tienda
+            if (panelJuego != null)
+            {
+                panelJuego.SetActive(false);
+                Debug.Log("🧩 Panel de juego desactivado al abrir la tienda.");
+            }
+
+            // 🛒 Abre la tienda
             buttonManager.MostrarPanel1();
         }
+
     }
 
 
