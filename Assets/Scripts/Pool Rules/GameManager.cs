@@ -22,7 +22,13 @@ public class GameManager : MonoBehaviour
     private JokerManager jokerManager;
     private ContadorRebotesAntesDeBlanca[] bolas;
     private bool puntosCalculados = true;
-    public GameObject panelJuego; // o el nombre que tú uses
+    public GameObject panelJuego; // o el nombre que tú use
+    public bool dobleReboteActivo = false;
+
+    [Header("Panel de oscurecimiento")]
+    public GameObject fondoOscuro; // Asigna un panel negro semitransparente desde la escena
+
+
     [Header("Referencia para comodines de escala")]
     public GameObject objetoEscalable; // Asigna en el Inspector el objeto que quieras agrandar
 
@@ -168,12 +174,18 @@ public class GameManager : MonoBehaviour
     {
         int puntosGanados = 0;
 
-        // 🟡 Sumamos todos los rebotes de las bolas que tocaron la blanca
+        // 🟡 Sumar rebotes de las bolas que tocaron la blanca
         foreach (var bola in bolas)
         {
             if (bola.haTocadoBlanca)
             {
-                puntosGanados += bola.rebotes;
+                int valorRebote = bola.rebotes;
+
+                // 💥 Si está activo el comodín de doble rebote, multiplicar
+                if (dobleReboteActivo)
+                    valorRebote *= 2;
+
+                puntosGanados += valorRebote;
             }
         }
 
@@ -185,34 +197,53 @@ public class GameManager : MonoBehaviour
         // 🏁 Si alcanza o supera la meta
         if (puntosJugador >= puntosRequeridos)
         {
-            // 💰 Calculamos oro ganado = rebotes + tiros restantes
+            // 💰 Oro ganado = rebotes + tiros restantes
             int oroGanado = Mathf.Max(1, puntosGanados + tirosRestantes);
-
-            // 🔹 Sumamos al total
             Oro += oroGanado;
 
             Debug.Log($"💰 Meta alcanzada: {puntosGanados} rebotes + {tirosRestantes} tiros restantes → +{oroGanado} oro. Total: {Oro}");
 
+            // 🔁 Reinicio y nueva meta
             puntosRequeridos += 2;
             puntosJugador = 0;
             ReiniciarTiros();
 
-            FindObjectOfType<InventarioJokerManager>()?.AplicarEfectosActivosAlInicio();
+            // 🧠 Aplicar efectos de comodines activos
+            var inventario = FindObjectOfType<InventarioJokerManager>();
+            if (inventario != null)
+            {
+                inventario.AplicarEfectosActivosAlInicio();
+            }
+
             uiManager?.ActualizarHUD();
 
-            // 🧩 Desactiva el panel del juego antes de abrir la tienda
+            // 🧩 Desactiva panel de juego (si existe)
             if (panelJuego != null)
             {
                 panelJuego.SetActive(false);
                 Debug.Log("🧩 Panel de juego desactivado al abrir la tienda.");
             }
 
-            // 🛒 Abre la tienda
-            buttonManager.MostrarPanel1();
+            if (buttonManager != null)
+            {
+                // 🛑 Pausar el juego
+                Time.timeScale = 0f;
+
+                // 🩶 Activar fondo oscuro si existe
+                if (fondoOscuro != null)
+                    fondoOscuro.SetActive(true);
+
+                // 🛒 Mostrar tienda
+                buttonManager.MostrarPanel1();
+                Debug.Log("🛒 Tienda abierta correctamente (juego pausado).");
+            }
+
+            else
+            {
+                Debug.LogError("❌ ButtonManager no asignado en GameManager. La tienda no se puede abrir.");
+            }
         }
-
     }
-
 
 
     public void EmpezarNuevoTurno()
@@ -228,6 +259,8 @@ public class GameManager : MonoBehaviour
         if (uiManager != null)
             uiManager.ActualizarHUD();
     }
+
+
 
 
 }

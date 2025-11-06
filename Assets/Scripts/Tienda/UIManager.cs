@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine.UI;
 using System.Collections; // ← IMPORTANTE
 
+
 public class UIManager : MonoBehaviour
 {
     [Header("Referencias UI")]
@@ -13,6 +14,25 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI textoRondaActual;
     public TextMeshProUGUI textoOro;
     public Button botonOpciones;
+    [Header("Avisos en pantalla")]
+    public TextMeshProUGUI avisoTexto;
+
+    public void MostrarAviso(string mensaje)
+    {
+        if (avisoTexto == null) return;
+        StartCoroutine(MostrarAvisoTemporal(mensaje));
+    }
+
+    private IEnumerator MostrarAvisoTemporal(string mensaje)
+    {
+        avisoTexto.text = mensaje;
+        avisoTexto.gameObject.SetActive(true);
+        avisoTexto.color = Color.yellow;
+
+        yield return new WaitForSeconds(2f);
+
+        avisoTexto.gameObject.SetActive(false);
+    }
 
     void Start()
     {

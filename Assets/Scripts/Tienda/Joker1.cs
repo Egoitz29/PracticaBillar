@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
-using UnityEngine;
 using System.Collections;
+
 
 
 [CreateAssetMenu(fileName = "NuevoComodin", menuName = "Tienda/Comodin")]
@@ -21,7 +21,8 @@ public class Joker1 : ScriptableObject
         BolaFantasma,
         EscudoRebote,
         MenosMeta,
-        AumentarEscala  // 🔹 Nuevo tipo de efecto
+        AumentarEscala,
+        DobleRebote// 🔹 Nuevo tipo de efecto
     }
 
     [Header("Tipo de efecto")]
@@ -65,6 +66,12 @@ public class Joker1 : ScriptableObject
 
             case TipoEfecto.AumentarEscala:
                 AumentarEscalaObjeto(gm);
+                break;
+
+            case TipoEfecto.DobleRebote:
+                gm.dobleReboteActivo = true;
+                Debug.Log($"💥 [{nombre}] Doble Rebote ACTIVADO → los rebotes valen x2");
+                gm.uiManager?.MostrarAviso("💥 Rebotes x2 ACTIVADOS");
                 break;
 
 
@@ -122,6 +129,17 @@ public class Joker1 : ScriptableObject
             gm.StartCoroutine(EscalaSuave(t, new Vector3(0.75f, 0.75f, 0.75f), 0.3f));
             Debug.Log($"🔻 [{nombre}] Escala restaurada a (0.75, 0.75, 0.75)");
         }
+
+        if (tipoEfecto == TipoEfecto.DobleRebote)
+        {
+            gm.dobleReboteActivo = false;
+            Debug.Log($"⚪ [{nombre}] Doble Rebote DESACTIVADO → los rebotes vuelven a 1");
+            gm.uiManager?.MostrarAviso("⚪ Rebotes x2 DESACTIVADOS");
+        }
+
+
     }
+
+
 
 }

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using TMPro;
+using System.Collections;
 
 public class ContadorRebotesAntesDeBlanca : MonoBehaviour
 {
@@ -9,21 +10,22 @@ public class ContadorRebotesAntesDeBlanca : MonoBehaviour
     public bool haSidoLanzada { get; private set; } = false;
 
     private BolaFisica bolaFisica;
-    private TextMeshPro textoDebug; // 👈 nuevo texto visible en el juego
+    private TextMeshPro textoDebug;
+    private Coroutine efectoX2;
 
     void Start()
     {
         bolaFisica = GetComponent<BolaFisica>();
         if (bolaFisica == null)
         {
-            Debug.LogError("BolaFisica no encontrada en " + gameObject.name);
+            Debug.LogError("❌ BolaFisica no encontrada en " + gameObject.name);
             enabled = false;
+            return;
         }
 
-        // 🧾 Crear texto de depuración en tiempo real
         GameObject textoObj = new GameObject("TextoRebotes_" + gameObject.name);
         textoObj.transform.SetParent(transform);
-        textoObj.transform.localPosition = new Vector3(0, 1.2f, 0); // encima de la bola
+        textoObj.transform.localPosition = new Vector3(0, 1.2f, 0);
 
         textoDebug = textoObj.AddComponent<TextMeshPro>();
         textoDebug.fontSize = 3f;
@@ -37,10 +39,10 @@ public class ContadorRebotesAntesDeBlanca : MonoBehaviour
         if (bolaFisica.EstaEnMovimiento && !haSidoLanzada)
             haSidoLanzada = true;
 
-        // 🧠 Actualizar texto constantemente
         if (textoDebug != null)
         {
-            textoDebug.text = $"Rebotes: {rebotes}";
+            bool x2Activo = GameManager.Instance != null && GameManager.Instance.dobleReboteActivo;
+            textoDebug.text = x2Activo ? $"Rebotes: {rebotes}  x2" : $"Rebotes: {rebotes}";
         }
     }
 
@@ -50,23 +52,33 @@ public class ContadorRebotesAntesDeBlanca : MonoBehaviour
         {
             int valorRebote = 1;
 
-            // 🃏 Si el jugador tiene el comodín Doble Puntos activo, cada rebote vale 2
-            var inventario = FindObjectOfType<InventarioJokerManager>();
-            if (inventario != null)
+            if (GameManager.Instance != null && GameManager.Instance.dobleReboteActivo)
             {
-                foreach (var joker in inventario.ObtenerInventario())
-                {
-                    if (joker != null && joker.tipoEfecto == Joker1.TipoEfecto.DoblePuntos)
-                    {
-                        valorRebote = 2;
-                        break;
-                    }
-                }
+                valorRebote = 2;
+
+                if (efectoX2 == null)
+                    efectoX2 = StartCoroutine(EfectoParpadeoX2());
             }
 
             rebotes += valorRebote;
             Debug.Log($"🟡 {gameObject.name} → Rebote +{valorRebote} (Total: {rebotes})");
         }
+    }
+
+    private IEnumerator EfectoParpadeoX2()
+    {
+        float tiempo = 0f;
+        while (GameManager.Instance != null && GameManager.Instance.dobleReboteActivo)
+        {
+            tiempo += Time.deltaTime * 3f;
+            textoDebug.color = Color.Lerp(Color.yellow, new Color(1f, 0.8f, 0f), Mathf.PingPong(tiempo, 1f));
+            textoDebug.alpha = Mathf.PingPong(tiempo * 0.5f, 0.5f) + 0.5f;
+            yield return null;
+        }
+
+        textoDebug.color = Color.yellow;
+        textoDebug.alpha = 1f;
+        efectoX2 = null;
     }
 
     public void VerificarBolaBlanca(GameObject otraBola)

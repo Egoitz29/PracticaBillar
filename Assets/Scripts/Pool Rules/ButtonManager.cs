@@ -73,17 +73,18 @@ public class ButtonManager : MonoBehaviour
             Debug.Log("🛒 Tienda cerrada.");
         }
 
+        // 🔄 Reanudar tiempo y ocultar fondo oscuro
+        Time.timeScale = 1f;
+        if (GameManager.Instance != null && GameManager.Instance.fondoOscuro != null)
+            GameManager.Instance.fondoOscuro.SetActive(false);
+
         ReiniciarPosiciones();
 
-        gameManager = GameManager.Instance;
-        if (gameManager == null)
-        {
-            Debug.LogWarning("⚠️ GameManager no encontrado.");
-            return;
-        }
-
-        gameManager.SiguienteNivel();
+        var gm = GameManager.Instance;
+        if (gm != null)
+            gm.SiguienteNivel();
     }
+
 
     public void MostrarPanel1()
     {

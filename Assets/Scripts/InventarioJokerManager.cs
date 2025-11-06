@@ -19,52 +19,90 @@ public class InventarioJokerManager : MonoBehaviour
 
     public void ComprarJoker(Joker1 nuevoJoker)
     {
-        if (nuevoJoker == null) { Debug.LogError("❌ ComprarJoker: nuevoJoker es NULL"); return; }
-        if (GameManager.Instance == null) { Debug.LogError("❌ ComprarJoker: GameManager.Instance es NULL"); return; }
-        if (zonaInventario == null || prefabJokerUI == null) { Debug.LogError("❌ Faltan referencias en InventarioJokerManager."); return; }
-
-        // No permitir duplicados
-        if (inventario.Exists(j => j.nombre == nuevoJoker.nombre))
+        if (nuevoJoker == null)
         {
-            Debug.Log("⚠️ Ya tienes '" + nuevoJoker.nombre + "' en el inventario.");
+            Debug.LogError("❌ ComprarJoker: nuevoJoker es NULL");
+            return;
+        }
+        if (GameManager.Instance == null)
+        {
+            Debug.LogError("❌ ComprarJoker: GameManager.Instance es NULL");
+            return;
+        }
+        if (zonaInventario == null || prefabJokerUI == null)
+        {
+            Debug.LogError("❌ Faltan referencias en InventarioJokerManager.");
             return;
         }
 
-        // Límite máximo
+        // 🧹 Limpieza de nulls
+        inventario.RemoveAll(j => j == null);
+
+        // 🚫 Evitar duplicados
+        if (inventario.Exists(j => j.nombre == nuevoJoker.nombre))
+        {
+            Debug.Log($"⚠️ Ya tienes el comodín '{nuevoJoker.nombre}' en el inventario.");
+            MostrarAvisoTemporal($"⚠️ Ya tienes '{nuevoJoker.nombre}'");
+            return;
+        }
+
+        // 📦 Comprobación de límite
         if (inventario.Count >= maxJokers)
         {
             Debug.Log("⚠️ Inventario lleno (máximo 3).");
+            MostrarAvisoTemporal("⚠️ Inventario lleno");
             return;
         }
 
-        // 💰 Oro suficiente
+        // 💰 Comprobación de oro
         if (GameManager.Instance.Oro < nuevoJoker.precioCompra)
         {
-            Debug.Log("💰 Oro insuficiente: tienes " + GameManager.Instance.Oro + ", cuesta " + nuevoJoker.precioCompra);
+            Debug.Log($"💰 Oro insuficiente: tienes {GameManager.Instance.Oro}, cuesta {nuevoJoker.precioCompra}");
             MostrarAvisoTemporal("💰 Oro insuficiente");
             return;
         }
 
-
-        // 💰 Cobrar y guardar
+        // 💰 Cobrar y añadir al inventario
         GameManager.Instance.Oro -= nuevoJoker.precioCompra;
         inventario.Add(nuevoJoker);
 
-        // 🔍 Primer slot libre
+        // 🔍 Buscar el primer slot realmente libre (sin hijos activos)
         Transform slotLibre = null;
         int slotIndex = -1;
+
         for (int i = 0; i < zonaInventario.childCount; i++)
         {
             Transform slot = zonaInventario.GetChild(i);
-            if (slot.childCount == 0) { slotLibre = slot; slotIndex = i; break; }
+
+            bool ocupado = false;
+            foreach (Transform hijo in slot)
+            {
+                if (hijo.gameObject.activeInHierarchy)
+                {
+                    ocupado = true;
+                    break;
+                }
+            }
+
+            if (!ocupado)
+            {
+                slotLibre = slot;
+                slotIndex = i;
+                break;
+            }
         }
 
-        if (slotLibre == null) { Debug.Log("⚠️ No hay huecos libres."); return; }
+        if (slotLibre == null)
+        {
+            Debug.Log("⚠️ No hay huecos libres en el inventario.");
+            MostrarAvisoTemporal("⚠️ Inventario lleno");
+            return;
+        }
 
-        // 🧱 Instanciar carta
+        // 🧱 Instanciar carta del comodín
         GameObject carta = Instantiate(prefabJokerUI, slotLibre);
 
-        // Centrar
+        // Centrar visualmente
         RectTransform rt = carta.GetComponent<RectTransform>();
         if (rt != null)
         {
@@ -76,7 +114,7 @@ public class InventarioJokerManager : MonoBehaviour
             rt.localRotation = Quaternion.identity;
         }
 
-        // 🧾 Visual
+        // 🧾 Rellenar información visual
         Transform iconoT = carta.transform.Find("Icono");
         Image iconoImg = iconoT ? iconoT.GetComponent<Image>() : null;
         if (iconoImg != null) iconoImg.sprite = nuevoJoker.icono;
@@ -89,7 +127,7 @@ public class InventarioJokerManager : MonoBehaviour
         if (descText) { descText.text = nuevoJoker.descripcion; descText.gameObject.SetActive(false); }
         if (precioText) { precioText.text = "💰 " + nuevoJoker.precioVenta; precioText.gameObject.SetActive(false); }
 
-        // 🎯 Arrastre e info
+        // 🎯 Componentes funcionales
         DraggableJokerInventario dragInv = carta.GetComponent<DraggableJokerInventario>();
         if (dragInv == null) dragInv = carta.AddComponent<DraggableJokerInventario>();
         dragInv.jokerData = nuevoJoker;
@@ -100,14 +138,15 @@ public class InventarioJokerManager : MonoBehaviour
 
         StartCoroutine(PopAnim(rt));
 
-        // 💰 Oro UI
+        // 💰 Actualizar UI de la tienda
         JokerShopUI shop = FindObjectOfType<JokerShopUI>();
-        if (shop != null) shop.ActualizarOro(-nuevoJoker.precioCompra);
+        if (shop != null)
+            shop.ActualizarOro(-nuevoJoker.precioCompra);
 
-        Debug.Log("✅ Comprado '" + nuevoJoker.nombre + "' en slot " + slotIndex + ". Oro: " + GameManager.Instance.Oro);
+        Debug.Log($"✅ Comprado '{nuevoJoker.nombre}' en slot {slotIndex}. Oro actual: {GameManager.Instance.Oro}");
 
-        // 🚀 APLICAR EFECTO DIRECTO
-        AplicarEfectoDirecto(nuevoJoker);
+        // 🚀 Aplicar efecto directo del comodín
+        nuevoJoker.AplicarEfecto(GameManager.Instance);
     }
 
     private void AplicarEfectoDirecto(Joker1 joker)
@@ -191,6 +230,25 @@ public class InventarioJokerManager : MonoBehaviour
 
     public void VenderJoker(Joker1 joker)
     {
+
+        if (inventario.Contains(joker))
+        {
+            inventario.Remove(joker);
+            joker.QuitarEfecto(GameManager.Instance);
+            GameManager.Instance.Oro += joker.precioVenta;
+
+            // 💰 Actualizar visualmente el oro en la tienda
+            JokerShopUI shopUI = FindObjectOfType<JokerShopUI>();
+            if (shopUI != null)
+                shopUI.ActualizarOro(+joker.precioVenta);
+
+            // 🎯 Actualizar también el HUD del juego (por si hay oro mostrado arriba)
+            if (GameManager.Instance.uiManager != null)
+                GameManager.Instance.uiManager.ActualizarHUD();
+
+            Debug.Log($"💰 Vendido {joker.nombre}. Oro actual: {GameManager.Instance.Oro}");
+        }
+
         if (joker == null) return;
         if (!inventario.Exists(j => j.nombre == joker.nombre)) return;
 
@@ -214,7 +272,8 @@ public class InventarioJokerManager : MonoBehaviour
         if (shop != null) shop.ActualizarOro(+joker.precioVenta);
 
         Debug.Log("🗑️ Vendido '" + joker.nombre + "'. Oro actual: " + GameManager.Instance.Oro);
-        QuitarEfectoDirecto(joker);
+        joker.QuitarEfecto(GameManager.Instance);
+
 
     }
 
@@ -223,17 +282,32 @@ public class InventarioJokerManager : MonoBehaviour
     private IEnumerator PopAnim(RectTransform rt)
     {
         if (rt == null) yield break;
+
         Vector3 target = Vector3.one;
         float time = 0f;
-        while (time < 0.25f)
+        float duracion = 0.25f;
+
+        while (time < duracion)
         {
+            // 💥 Si el objeto fue destruido, sal inmediatamente
+            if (rt == null || rt.gameObject == null)
+                yield break;
+
             time += Time.deltaTime;
-            float t = time / 0.25f;
-            rt.localScale = Vector3.Lerp(Vector3.one * 0.8f, target, Mathf.SmoothStep(0f, 1f, t));
+            float t = Mathf.SmoothStep(0f, 1f, time / duracion);
+
+            // Protegido contra referencias destruidas
+            if (rt != null)
+                rt.localScale = Vector3.Lerp(Vector3.one * 0.8f, target, t);
+
             yield return null;
         }
-        rt.localScale = target;
+
+        // Última comprobación antes de aplicar la escala final
+        if (rt != null)
+            rt.localScale = target;
     }
+
     // 🔹 Aplica efectos pasivos como MenosMeta o MasTiro al inicio de cada ronda
     public void AplicarEfectosActivosAlInicio()
     {
