@@ -10,6 +10,11 @@ public class InventarioJokerManager : MonoBehaviour
     public GameObject prefabJokerUI;          // Prefab de la carta del comodín
     public int maxJokers = 3;
 
+    [SerializeField] private TMPro.TextMeshProUGUI mensajeAvisoTexto;
+    private Coroutine avisoCoroutine;
+
+
+
     private List<Joker1> inventario = new List<Joker1>();
 
     public void ComprarJoker(Joker1 nuevoJoker)
@@ -32,12 +37,14 @@ public class InventarioJokerManager : MonoBehaviour
             return;
         }
 
-        // Oro suficiente
+        // 💰 Oro suficiente
         if (GameManager.Instance.Oro < nuevoJoker.precioCompra)
         {
             Debug.Log("💰 Oro insuficiente: tienes " + GameManager.Instance.Oro + ", cuesta " + nuevoJoker.precioCompra);
+            MostrarAvisoTemporal("💰 Oro insuficiente");
             return;
         }
+
 
         // 💰 Cobrar y guardar
         GameManager.Instance.Oro -= nuevoJoker.precioCompra;
@@ -261,4 +268,33 @@ public class InventarioJokerManager : MonoBehaviour
         gm.uiManager?.ActualizarHUD();
     }
 
+    private void MostrarAvisoTemporal(string texto)
+    {
+        if (mensajeAvisoTexto == null) return;
+
+        if (avisoCoroutine != null)
+            StopCoroutine(avisoCoroutine);
+
+        avisoCoroutine = StartCoroutine(AvisoCoroutine(texto));
+    }
+
+    private IEnumerator AvisoCoroutine(string texto)
+    {
+        mensajeAvisoTexto.text = texto;
+        mensajeAvisoTexto.gameObject.SetActive(true);
+
+        float tiempo = 0f;
+        float duracion = 2f;
+
+        // Parpadeo visual en rojo suave
+        while (tiempo < duracion)
+        {
+            tiempo += Time.deltaTime;
+            float alpha = Mathf.Abs(Mathf.Sin(tiempo * 6f)); // efecto parpadeo
+            mensajeAvisoTexto.color = new Color(1f, 0.3f, 0.3f, alpha);
+            yield return null;
+        }
+
+        mensajeAvisoTexto.gameObject.SetActive(false);
+    }
 }

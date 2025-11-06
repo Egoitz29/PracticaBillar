@@ -23,6 +23,9 @@ public class GameManager : MonoBehaviour
     private ContadorRebotesAntesDeBlanca[] bolas;
     private bool puntosCalculados = true;
     public GameObject panelJuego; // o el nombre que tú uses
+    [Header("Referencia para comodines de escala")]
+    public GameObject objetoEscalable; // Asigna en el Inspector el objeto que quieras agrandar
+
 
 
     private void Awake()

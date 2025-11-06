@@ -1,4 +1,7 @@
 ﻿using UnityEngine;
+using UnityEngine;
+using System.Collections;
+
 
 [CreateAssetMenu(fileName = "NuevoComodin", menuName = "Tienda/Comodin")]
 public class Joker1 : ScriptableObject
@@ -10,15 +13,30 @@ public class Joker1 : ScriptableObject
     public int precioVenta;
     [TextArea] public string descripcion;
 
-    public enum TipoEfecto { Ninguno, MasTiro, DoblePuntos, BolaFantasma, EscudoRebote, MenosMeta }
-    [Header("Tipo de efecto")] public TipoEfecto tipoEfecto = TipoEfecto.Ninguno;
+    public enum TipoEfecto
+    {
+        Ninguno,
+        MasTiro,
+        DoblePuntos,
+        BolaFantasma,
+        EscudoRebote,
+        MenosMeta,
+        AumentarEscala  // 🔹 Nuevo tipo de efecto
+    }
+
+    [Header("Tipo de efecto")]
+    public TipoEfecto tipoEfecto = TipoEfecto.Ninguno;
 
     /// <summary>
     /// Aplica el efecto al inicio de la nueva ronda.
     /// </summary>
     public void AplicarEfecto(GameManager gm)
     {
-        if (!gm) { Debug.LogWarning("⚠️ [Joker1] GameManager nulo."); return; }
+        if (!gm)
+        {
+            Debug.LogWarning("⚠️ [Joker1] GameManager nulo.");
+            return;
+        }
 
         switch (tipoEfecto)
         {
@@ -28,18 +46,27 @@ public class Joker1 : ScriptableObject
                 break;
 
             case TipoEfecto.DoblePuntos:
-                // Marca un flag en el GM si quieres duplicar puntos del próximo turno.
-                // Por ahora lo dejamos como log para no romper nada.
                 Debug.Log($"💥 [{nombre}] Doble Puntos (implementa el multiplicador en el cálculo de puntos).");
                 break;
 
             case TipoEfecto.BolaFantasma:
-                Debug.Log($"👻 [{nombre}] Bola Fantasma (activa un flag en tus colisiones).");
+                Debug.Log($"👻 [{nombre}] Bola Fantasma activada.");
                 break;
 
             case TipoEfecto.EscudoRebote:
-                Debug.Log($"🛡️ [{nombre}] Escudo de Rebote (activa un flag para perdonar un fallo).");
+                Debug.Log($"🛡️ [{nombre}] Escudo de Rebote activado.");
                 break;
+
+            case TipoEfecto.MenosMeta:
+                gm.puntosRequeridos = Mathf.Max(1, gm.puntosRequeridos - 1);
+                Debug.Log($"🎯 [{nombre}] Meta reducida a {gm.puntosRequeridos}.");
+                gm.uiManager?.ActualizarHUD();
+                break;
+
+            case TipoEfecto.AumentarEscala:
+                AumentarEscalaObjeto(gm);
+                break;
+
 
             default:
                 Debug.Log($"ℹ️ [{nombre}] sin efecto.");
@@ -48,4 +75,53 @@ public class Joker1 : ScriptableObject
 
         gm.uiManager?.ActualizarHUD();
     }
+
+    // ============================================================
+    // ⚙️ NUEVO MÉTODO → Aumentar Escala de un objeto concreto
+    // ============================================================
+    private void AumentarEscalaObjeto(GameManager gm)
+    {
+        if (gm.objetoEscalable == null)
+        {
+            Debug.LogWarning("⚠️ [Joker1] No se asignó 'objetoEscalable' en el GameManager.");
+            return;
+        }
+
+        Transform t = gm.objetoEscalable.transform;
+        Vector3 objetivo = new Vector3(1f, 1f, 1f);
+        gm.StartCoroutine(EscalaSuave(t, objetivo, 0.3f));
+        Debug.Log($"🟢 [{nombre}] Escala aumentada del objeto '{gm.objetoEscalable.name}'");
+    }
+
+    private IEnumerator EscalaSuave(Transform t, Vector3 objetivo, float duracion)
+    {
+        Vector3 inicio = t.localScale;
+        float tiempo = 0f;
+
+        while (tiempo < duracion)
+        {
+            tiempo += Time.deltaTime;
+            t.localScale = Vector3.Lerp(inicio, objetivo, tiempo / duracion);
+            yield return null;
+        }
+
+        t.localScale = objetivo;
+    }
+
+
+    /// <summary>
+    /// Revertir efecto (por ejemplo, al vender el comodín)
+    /// </summary>
+    public void QuitarEfecto(GameManager gm)
+    {
+        if (!gm || gm.objetoEscalable == null) return;
+
+        if (tipoEfecto == TipoEfecto.AumentarEscala)
+        {
+            Transform t = gm.objetoEscalable.transform;
+            gm.StartCoroutine(EscalaSuave(t, new Vector3(0.75f, 0.75f, 0.75f), 0.3f));
+            Debug.Log($"🔻 [{nombre}] Escala restaurada a (0.75, 0.75, 0.75)");
+        }
+    }
+
 }

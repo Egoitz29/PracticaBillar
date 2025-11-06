@@ -33,11 +33,33 @@ public class JokerShopUI : MonoBehaviour
 
     public void ActualizarTienda()
     {
+        // 🔸 Borra las cartas actuales
         foreach (Transform hijo in zonaTienda)
             Destroy(hijo.gameObject);
 
-        int cantidad = Mathf.Min(2, comodinesDisponibles.Count);
-        List<Joker1> copiaLista = new List<Joker1>(comodinesDisponibles);
+        // 🔹 Asegúrate de tener acceso al inventario
+        InventarioJokerManager inventario = FindObjectOfType<InventarioJokerManager>();
+        List<Joker1> inventarioActual = inventario != null ? inventario.ObtenerInventario() : new List<Joker1>();
+
+        // 🔸 Filtra los comodines que NO están en el inventario
+        List<Joker1> comodinesFiltrados = new List<Joker1>();
+        foreach (var c in comodinesDisponibles)
+        {
+            bool yaLoTiene = inventarioActual.Exists(j => j.nombre == c.nombre);
+            if (!yaLoTiene)
+                comodinesFiltrados.Add(c);
+        }
+
+        // 🧮 Si no quedan comodines nuevos, muestra aviso
+        if (comodinesFiltrados.Count == 0)
+        {
+            Debug.Log("🏪 No hay nuevos comodines disponibles para mostrar.");
+            return;
+        }
+
+        // 🔹 Muestra hasta 2 aleatorios
+        int cantidad = Mathf.Min(2, comodinesFiltrados.Count);
+        List<Joker1> copiaLista = new List<Joker1>(comodinesFiltrados);
 
         for (int i = 0; i < cantidad; i++)
         {
@@ -47,6 +69,8 @@ public class JokerShopUI : MonoBehaviour
 
             CrearCartaJoker(j, zonaTienda);
         }
+
+        Debug.Log($"🛒 Tienda actualizada: {cantidad} comodines nuevos mostrados.");
     }
 
     void CrearCartaJoker(Joker1 joker, Transform parent)
