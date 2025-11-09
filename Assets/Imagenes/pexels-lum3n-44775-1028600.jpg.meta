@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 11ca4c68cf947454fbce0df5d84940c4
+guid: bef5a7f74d79af44d85e0b65ff7c36eb
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2839018229734585476
-    second: BasaBillar_0
+      213: -1270111022686724806
+    second: pexels-lum3n-44775-1028600_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -110,7 +110,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: WebGL
+    buildTarget: iOS
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BasaBillar_0
+      name: pexels-lum3n-44775-1028600_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 8018
-        height: 4518
+        width: 3406
+        height: 2554
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4843036c908366720800000000000000
-      internalID: 2839018229734585476
+      spriteID: a3d137311c8af5ee0800000000000000
+      internalID: -1270111022686724806
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      BasaBillar_0: 2839018229734585476
+      pexels-lum3n-44775-1028600_0: -1270111022686724806
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

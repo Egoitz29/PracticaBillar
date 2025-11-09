@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 508ee5fcbca331a4e89b554423a6f5f5
+guid: 3b3b47430ad8c4e4887ae471f5962cda
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2229422569447423035
-    second: BaseBillar_0
+      213: -7156515226134949317
+    second: pexels-yankrukov-9071740_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -110,7 +110,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: WebGL
+    buildTarget: iOS
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BaseBillar_0
+      name: pexels-yankrukov-9071740_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 8018
-        height: 4518
+        width: 4000
+        height: 6000
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5c309dd2cff7f01e0800000000000000
-      internalID: -2229422569447423035
+      spriteID: b325d849153feac90800000000000000
+      internalID: -7156515226134949317
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      BaseBillar_0: -2229422569447423035
+      pexels-yankrukov-9071740_0: -7156515226134949317
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

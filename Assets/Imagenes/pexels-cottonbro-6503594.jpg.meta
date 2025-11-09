@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 57c476a3192610b4dbe4fd7f87f2632f
+guid: e55c74ebde9dc2d41af331899a215a26
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2471175857543015690
-    second: pexels-nickcollins-1293120_0
+      213: 6267047612670381058
+    second: pexels-cottonbro-6503594_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -109,17 +109,30 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: pexels-nickcollins-1293120_0
+      name: pexels-cottonbro-6503594_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 6000
-        height: 4000
+        width: 2333
+        height: 3500
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a0d6f5e79516b4220800000000000000
-      internalID: 2471175857543015690
+      spriteID: 20c8da7799609f650800000000000000
+      internalID: 6267047612670381058
       vertices: []
       indices: 
       edges: []
@@ -148,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      pexels-nickcollins-1293120_0: 2471175857543015690
+      pexels-cottonbro-6503594_0: 6267047612670381058
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
