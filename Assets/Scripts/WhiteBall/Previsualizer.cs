@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(BolaFisica))]
 public class BolaDisparoPreview : MonoBehaviour
@@ -6,11 +6,15 @@ public class BolaDisparoPreview : MonoBehaviour
     public float fuerzaDisparo = 10f;
     public float radioBola = 0.15f;
     public LayerMask capaBolas;
-    public LayerMask capaParedes; // NUEVO
+    public LayerMask capaParedes;
 
     private BolaFisica bola;
     private Camera cam;
     private LineRenderer lineRenderer;
+
+    // Control de escala visual de la línea según fuerza
+    public float longitudBase = 5f;       // longitud mínima de la línea
+    public float multiplicadorFuerza = 0.5f; // qué tanto se alarga visualmente según la fuerza
 
     void Start()
     {
@@ -31,7 +35,8 @@ public class BolaDisparoPreview : MonoBehaviour
 
     void Update()
     {
-        if (!GetComponent<BolaDisparo>().IsAiming)
+        var disparo = GetComponent<BolaDisparo>();
+        if (!disparo.IsAiming)
         {
             lineRenderer.positionCount = 0;
             return;
@@ -44,8 +49,11 @@ public class BolaDisparoPreview : MonoBehaviour
 
         Vector2 origen = transform.position;
 
-        // Primero comprobamos colisi�n con bola
-        RaycastHit2D hitBola = Physics2D.CircleCast(origen, radioBola, direccion, 10f, capaBolas);
+        // 🔸 Determinamos el alcance máximo visual según la "fuerza"
+        float alcanceVisual = longitudBase + distancia * multiplicadorFuerza;
+
+        // Colisión con bola
+        RaycastHit2D hitBola = Physics2D.CircleCast(origen, radioBola, direccion, alcanceVisual, capaBolas);
 
         if (hitBola.collider != null && hitBola.collider.gameObject != gameObject)
         {
@@ -67,27 +75,23 @@ public class BolaDisparoPreview : MonoBehaviour
             lineRenderer.positionCount = 6;
             lineRenderer.SetPosition(0, origen);
             lineRenderer.SetPosition(1, puntoImpacto);
-
             lineRenderer.SetPosition(2, puntoImpacto);
             lineRenderer.SetPosition(3, postGolpeBlanca);
-
             lineRenderer.SetPosition(4, bolaObjetivo.position);
             lineRenderer.SetPosition(5, postGolpeObjetivo);
         }
         else
         {
-            // Si no choca con bola, buscamos colisi�n con pared
-            RaycastHit2D hitPared = Physics2D.CircleCast(origen, radioBola, direccion, 10f, capaParedes);
+            // Colisión con pared
+            RaycastHit2D hitPared = Physics2D.CircleCast(origen, radioBola, direccion, alcanceVisual, capaParedes);
 
             if (hitPared.collider != null)
             {
                 Vector2 puntoImpacto = hitPared.point;
                 Vector2 normal = hitPared.normal;
-
-                // Reflexi�n: R = D - 2(D�N)N
                 Vector2 direccionRebote = Vector2.Reflect(direccion, normal);
 
-                Vector2 puntoDespuesRebote = puntoImpacto + direccionRebote.normalized * 3f;
+                Vector2 puntoDespuesRebote = puntoImpacto + direccionRebote.normalized * (alcanceVisual * 0.3f);
 
                 lineRenderer.positionCount = 3;
                 lineRenderer.SetPosition(0, origen);
@@ -96,12 +100,11 @@ public class BolaDisparoPreview : MonoBehaviour
             }
             else
             {
-                // L�nea recta si no colisiona con nada
+                // Línea recta según fuerza
                 lineRenderer.positionCount = 2;
                 lineRenderer.SetPosition(0, origen);
-                lineRenderer.SetPosition(1, origen + direccion * 5f);
+                lineRenderer.SetPosition(1, origen + direccion * alcanceVisual);
             }
         }
     }
 }
-
