@@ -1945,6 +1945,51 @@ MonoBehaviour:
   _ionAccessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjZDU4OTJlOC1lMGFiLTQ4OTUtOWM5MS1jMmJiN2VmMmYzMDUiLCJpZCI6MzMyNTU2LCJpYXQiOjE3NTUzNTExMzh9.X6NvLCf8CFW-_btTRQPuYG0M8iNCZLVZxMsQBsiXgx4
   _ionServer: {fileID: 11400000, guid: c77e4d7438d392a4c822818f626fb8f8, type: 2}
   _assetOptions: 
+--- !u!1 &1167984202
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1167984204}
+  - component: {fileID: 1167984203}
+  m_Layer: 0
+  m_Name: MinigameTestLoader
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1167984203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1167984202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 605bfa2620dfd634f9bc7afdd5d6eb0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minigameSceneName: MiniRompeCubo2D
+--- !u!4 &1167984204
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1167984202}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 679.1394, y: 1511.9344, z: -3.427136}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1272702011
 GameObject:
   m_ObjectHideFlags: 0
@@ -2562,7 +2607,7 @@ Transform:
   m_GameObject: {fileID: 1786071962}
   serializedVersion: 2
   m_LocalRotation: {x: 1.3877788e-17, y: 4.5254265e-18, z: -6.4176606e-19, w: 1}
-  m_LocalPosition: {x: -0.0000000064610504, y: 1.43, z: -4.656613e-10}
+  m_LocalPosition: {x: -0.000000006693881, y: 1.43, z: -4.656613e-10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2600,7 +2645,7 @@ MonoBehaviour:
       w: 0
     c3:
       x: 4853814.021929103
-      y: -314205.33745024964
+      y: -314205.3374502499
       z: 4114303.72681061
       w: 1
   _localToGlobeFixedMatrixIsValid: 1
@@ -3035,3 +3080,4 @@ SceneRoots:
   - {fileID: 550558048}
   - {fileID: 131142210}
   - {fileID: 940235164}
+  - {fileID: 1167984204}
