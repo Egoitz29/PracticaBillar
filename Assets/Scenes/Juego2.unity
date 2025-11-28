@@ -1429,57 +1429,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &940235162
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 940235164}
-  - component: {fileID: 940235163}
-  m_Layer: 0
-  m_Name: ZoneManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &940235163
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 940235162}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c36fe08b8659c94aa8043adabe61009, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  numberOfZones: 3
-  mapMin: {x: -100, y: 1, z: -100}
-  mapMax: {x: 100, y: 1, z: 100}
-  zoneRadius: 5
-  zones: []
-  currentZoneIndex: 0
-  zonePrefab: {fileID: 1979385654173297524, guid: d3c22f9b623516949a4306305ca97ca8, type: 3}
---- !u!4 &940235164
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 940235162}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 393.15436, y: 197.62442, z: 7.970314}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &942361099
 GameObject:
   m_ObjectHideFlags: 0
@@ -2607,7 +2556,7 @@ Transform:
   m_GameObject: {fileID: 1786071962}
   serializedVersion: 2
   m_LocalRotation: {x: 1.3877788e-17, y: 4.5254265e-18, z: -6.4176606e-19, w: 1}
-  m_LocalPosition: {x: -0.000000006693881, y: 1.43, z: -4.656613e-10}
+  m_LocalPosition: {x: -0.0000000068102963, y: 1.43, z: -4.656613e-10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2645,7 +2594,7 @@ MonoBehaviour:
       w: 0
     c3:
       x: 4853814.021929103
-      y: -314205.3374502499
+      y: -314205.33745025
       z: 4114303.72681061
       w: 1
   _localToGlobeFixedMatrixIsValid: 1
@@ -3079,5 +3028,4 @@ SceneRoots:
   - {fileID: 94110683}
   - {fileID: 550558048}
   - {fileID: 131142210}
-  - {fileID: 940235164}
   - {fileID: 1167984204}
