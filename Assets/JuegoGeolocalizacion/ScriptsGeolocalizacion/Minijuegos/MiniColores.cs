@@ -169,7 +169,9 @@ public class MiniColores : MonoBehaviour
     {
         finished = true;
         resultText.gameObject.SetActive(true);
+        GameSessionManager.Instance.AddScore(10);
         resultText.text = "¡HAS GANADO!";
+        
         Invoke("ReturnToMap", 1f);
     }
 
@@ -177,6 +179,7 @@ public class MiniColores : MonoBehaviour
     {
         finished = true;
         resultText.gameObject.SetActive(true);
+        GameSessionManager.Instance.AddScore(-5);
         resultText.text = "HAS PERDIDO";
         Invoke("ReturnToMap", 1f);
     }

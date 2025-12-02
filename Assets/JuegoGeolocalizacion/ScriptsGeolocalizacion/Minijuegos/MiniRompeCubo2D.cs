@@ -67,6 +67,7 @@ public class MiniRompeCubo2D : MonoBehaviour
         finished = true;
         resultText.gameObject.SetActive(true);
         resultText.text = "HAS GANADO";
+        GameSessionManager.Instance.AddScore(10);
         Invoke("ReturnToMap", 1f); // vuelve al mapa en 1 segundo
     }
 
@@ -75,6 +76,7 @@ public class MiniRompeCubo2D : MonoBehaviour
         finished = true;
         resultText.gameObject.SetActive(true);
         resultText.text = "HAS PERDIDO";
+        GameSessionManager.Instance.AddScore(-5);
         Invoke("ReturnToMap", 1f); // vuelve al mapa en 1 segundo
     }
 
