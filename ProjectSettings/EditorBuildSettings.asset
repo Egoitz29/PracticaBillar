@@ -23,6 +23,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MiniRompeCubo2D.unity
     guid: ad450f9b33b32c342ae8bba67fa5be8f
+  - enabled: 1
+    path: Assets/Scenes/MiniColores.unity
+    guid: 8f33949485e75b744a58b769b0f679cc
+  - enabled: 1
+    path: Assets/Scenes/MiniBotonInexistente2D.unity
+    guid: f4a72eca9e7787d46ab92e7322971888
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
