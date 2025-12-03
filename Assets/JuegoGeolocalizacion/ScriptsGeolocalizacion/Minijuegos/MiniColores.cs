@@ -23,7 +23,7 @@ public class MiniColores : MonoBehaviour
     public Button[] colorButtons;
 
     [Header("Escena a la que vuelve")]
-    public string returnSceneName = "MapaGPS";
+    public string returnSceneName = "Juego2";
 
     private string correctColor;
     private int currentRound = 1;
