@@ -15,16 +15,21 @@ public class ZoneSpawner : MonoBehaviour
     public float stabilityRadius = 1f;
     public float stableTimeRequired = 5f;
 
-    public TextMeshProUGUI gpsStatusText; // ← NUEVO
+    public TextMeshProUGUI gpsStatusText;
 
     bool zonesSpawned = false;
 
     IEnumerator Start()
     {
+        Screen.orientation = ScreenOrientation.Portrait;
+        Screen.autorotateToPortrait = true;
+        Screen.autorotateToPortraitUpsideDown = false;
+        Screen.autorotateToLandscapeLeft = false;
+        Screen.autorotateToLandscapeRight = false;
+
         gpsStatusText.gameObject.SetActive(true);
         gpsStatusText.text = "Esperando señal GPS...";
 
-        // 1) Esperar al GPS real
         while (!DeviceLocationService.Instance || !DeviceLocationService.Instance.Ready)
         {
             gpsStatusText.text = "GPS no disponible...";
@@ -32,14 +37,10 @@ public class ZoneSpawner : MonoBehaviour
         }
 
         gpsStatusText.text = "Posición inestable...";
-
-        // 2) Esperar posición estable
         yield return StartCoroutine(WaitForStablePosition());
 
-        // 3) Ocultar indicador
         gpsStatusText.gameObject.SetActive(false);
 
-        // 4) Instanciar zonas
         SpawnZones();
     }
 
@@ -89,5 +90,16 @@ public class ZoneSpawner : MonoBehaviour
             ZoneTrigger trigger = zone.GetComponent<ZoneTrigger>();
             trigger.interactButton = interactButton;
         }
+    }
+
+
+    void OnDisable()
+    {
+        Screen.orientation = ScreenOrientation.LandscapeLeft;
+
+        Screen.autorotateToPortrait = false;
+        Screen.autorotateToPortraitUpsideDown = false;
+        Screen.autorotateToLandscapeLeft = true;
+        Screen.autorotateToLandscapeRight = true;
     }
 }

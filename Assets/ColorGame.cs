@@ -55,7 +55,6 @@ public class ColorGame2D : MonoBehaviour
 
     private void HandleInput()
     {
-        // PRIORIDAD: TOUCH PRIMERO (cubre móvil Y Editor simulando touch con ratón)
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
@@ -65,7 +64,6 @@ public class ColorGame2D : MonoBehaviour
                 TryHitAt(worldPos);
             }
         }
-        // SOLO SI NO HAY TOUCH: RATÓN (para builds PC standalone)
         else if (Input.GetMouseButtonDown(0))
         {
             Vector2 worldPos = mainCam.ScreenToWorldPoint(Input.mousePosition);

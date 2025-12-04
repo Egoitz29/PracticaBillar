@@ -707,10 +707,9 @@ MonoBehaviour:
   rows: 2
   cellSize: {x: 1.5, y: 1.5}
   startPosition: {x: -3, y: 1}
-  totalRounds: 10
   loseSceneName: Juego2
   winSceneName: Juego2
-  roundText: {fileID: 0}
+  returnSceneName: Juego2
 --- !u!114 &1489701532
 MonoBehaviour:
   m_ObjectHideFlags: 0
