@@ -52,6 +52,7 @@ public class GameSessionManager : MonoBehaviour
         if (player == null) return;
 
         TrackDistance();
+        ZoneVisited();
 
         if (score >= 30)
         {
