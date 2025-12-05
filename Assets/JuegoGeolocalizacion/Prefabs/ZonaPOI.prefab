@@ -292,3 +292,4 @@ MonoBehaviour:
   - MiniRompeCubo2D
   glowEffect: {fileID: 858062998732270985}
   interactButton: {fileID: 0}
+  visited: 0

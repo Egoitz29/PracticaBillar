@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ColorGame2D : MonoBehaviour
+public class ColorGame : MonoBehaviour
 {
     [Header("Prefab y contenedor")]
     [SerializeField] private GameObject squarePrefab;        // Debe tener SpriteRenderer
@@ -13,7 +13,6 @@ public class ColorGame2D : MonoBehaviour
     [SerializeField] private int columns = 5;
     [SerializeField] private int rows = 2;
     [SerializeField] private Vector2 cellSize = new Vector2(1.5f, 1.5f);
-    [SerializeField] private Vector2 startPosition = new Vector2(-3.0f, 1.0f);
 
     [Header("Juego")]
     [SerializeField] private int totalRounds = 10;
@@ -79,7 +78,6 @@ public class ColorGame2D : MonoBehaviour
             ColorSquare colorSquare = hit.collider.GetComponent<ColorSquare>();
             if (colorSquare != null)
             {
-                Debug.Log($"Click detectado en cuadrado índice: {colorSquare.index}"); // DEBUG EXTRA
                 CheckAnswer(colorSquare.index);
             }
         }
@@ -97,10 +95,7 @@ public class ColorGame2D : MonoBehaviour
         ClearSquares();
         GenerateGrid();
 
-        // Color base aleatorio (mejorado para variedad)
         baseColor = Random.ColorHSV(0f, 1f, 0.5f, 1f, 0.5f, 1f);
-
-        // Dificultad creciente
         float diff = Mathf.Max(0.01f, 0.09f - (currentRound - 1) * 0.007f);
 
         correctIndex = Random.Range(0, squares.Count);
@@ -108,11 +103,9 @@ public class ColorGame2D : MonoBehaviour
         for (int i = 0; i < squares.Count; i++)
         {
             SpriteRenderer sr = squares[i].GetComponent<SpriteRenderer>();
-            ColorSquare cs = squares[i].GetComponent<ColorSquare>();
 
             if (i == correctIndex)
             {
-                // El cuadrado distinto (cambio muy sutil)
                 sr.color = new Color(
                     Mathf.Clamp01(baseColor.r + diff),
                     Mathf.Clamp01(baseColor.g - diff * 0.6f),
@@ -124,8 +117,6 @@ public class ColorGame2D : MonoBehaviour
                 sr.color = baseColor;
             }
         }
-
-        Debug.Log($"Ronda {currentRound}/{totalRounds} - Cuadrado diferente en índice: {correctIndex}");
     }
 
     private void CheckAnswer(int index)
@@ -134,13 +125,11 @@ public class ColorGame2D : MonoBehaviour
 
         if (index == correctIndex)
         {
-            Debug.Log("CORRECTO! Siguiente ronda");
             currentRound++;
             StartRound();
         }
         else
         {
-            Debug.Log($"INCORRECTO! Clickaste {index} pero era {correctIndex}");
             OnLose();
         }
     }
@@ -158,7 +147,6 @@ public class ColorGame2D : MonoBehaviour
     {
         isGameOver = true;
         ClearSquares();
-        Debug.Log("VICTORIA! Completaste las 10 rondas sin fallar!");
 
         if (!string.IsNullOrEmpty(winSceneName))
             SceneManager.LoadScene(winSceneName);
@@ -174,21 +162,26 @@ public class ColorGame2D : MonoBehaviour
     {
         int index = 0;
 
+        // Calculamos startPosition para centrar la grilla en la cámara
+        Vector2 startPosition = new Vector2(
+            -((columns - 1) * cellSize.x) / 2f,
+            ((rows - 1) * cellSize.y) / 2f
+        );
+
         for (int r = 0; r < rows; r++)
         {
             for (int c = 0; c < columns; c++)
             {
-                Vector2 pos = startPosition + new Vector2(c * cellSize.x, -r * cellSize.y);
+                Vector2 pos2D = startPosition + new Vector2(c * cellSize.x, -r * cellSize.y);
+                Vector3 pos = new Vector3(pos2D.x, pos2D.y, 0f); // Z = 0
 
                 GameObject go = Instantiate(squarePrefab, pos, Quaternion.identity, gridParent);
                 go.transform.localScale = Vector3.one * 0.9f;
 
-                // Aseguramos collider (un poco más grande = clicks perfectos)
                 BoxCollider2D col = go.GetComponent<BoxCollider2D>();
                 if (col == null) col = go.AddComponent<BoxCollider2D>();
                 col.size = new Vector2(1.5f, 1.5f);
 
-                // COMPONENTE CLAVE: índice directo
                 ColorSquare colorSquare = go.AddComponent<ColorSquare>();
                 colorSquare.index = index;
 
@@ -209,7 +202,6 @@ public class ColorGame2D : MonoBehaviour
     }
 }
 
-// COMPONENTE PEQUEÑO (NO LO BORRES)
 public class ColorSquare : MonoBehaviour
 {
     [HideInInspector] public int index;
