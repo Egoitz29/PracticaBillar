@@ -51,6 +51,9 @@ public class GameSessionManager : MonoBehaviour
     {
         if (player == null) return;
 
+
+        GameScore.Instance.score = score;
+
         TrackDistance();
         ZoneVisited();
 
