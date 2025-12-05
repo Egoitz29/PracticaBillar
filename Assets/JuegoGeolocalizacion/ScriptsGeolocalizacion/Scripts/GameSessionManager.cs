@@ -52,6 +52,11 @@ public class GameSessionManager : MonoBehaviour
         if (player == null) return;
 
         TrackDistance();
+
+        if (score >= 30)
+        {
+            EndRun();
+        }
     }
 
     void TrackDistance()
