@@ -6,8 +6,8 @@ using UnityEngine.SceneManagement;
 public class ColorGame : MonoBehaviour
 {
     [Header("Prefab y contenedor")]
-    [SerializeField] private GameObject squarePrefab;        // Debe tener SpriteRenderer
-    [SerializeField] private Transform gridParent;           // Objeto vacío para agrupar
+    [SerializeField] private GameObject squarePrefab;
+    [SerializeField] private Transform gridParent;
 
     [Header("Cuadrícula")]
     [SerializeField] private int columns = 5;
@@ -16,8 +16,7 @@ public class ColorGame : MonoBehaviour
 
     [Header("Juego")]
     [SerializeField] private int totalRounds = 10;
-    [SerializeField] private string loseSceneName = "Derrota";
-    [SerializeField] private string winSceneName = "Victoria";
+    [SerializeField] private string returnSceneName = "MapaGPS"; // ← IMPORTANTE
 
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI roundText;
@@ -32,17 +31,12 @@ public class ColorGame : MonoBehaviour
     private void Awake()
     {
         mainCam = Camera.main;
-
-        if (squarePrefab == null) Debug.LogError("[ColorGame2D] Falta asignar squarePrefab.");
-        if (gridParent == null) Debug.LogError("[ColorGame2D] Falta asignar gridParent.");
     }
 
     private void Start()
     {
         if (squarePrefab == null || gridParent == null) return;
-
         currentRound = 1;
-        isGameOver = false;
         StartRound();
     }
 
@@ -97,13 +91,11 @@ public class ColorGame : MonoBehaviour
 
         baseColor = Random.ColorHSV(0f, 1f, 0.5f, 1f, 0.5f, 1f);
         float diff = Mathf.Max(0.01f, 0.09f - (currentRound - 1) * 0.007f);
-
         correctIndex = Random.Range(0, squares.Count);
 
         for (int i = 0; i < squares.Count; i++)
         {
             SpriteRenderer sr = squares[i].GetComponent<SpriteRenderer>();
-
             if (i == correctIndex)
             {
                 sr.color = new Color(
@@ -138,18 +130,16 @@ public class ColorGame : MonoBehaviour
     {
         isGameOver = true;
         ClearSquares();
-
-        if (!string.IsNullOrEmpty(loseSceneName))
-            SceneManager.LoadScene(loseSceneName);
+        GameSessionManager.Instance.AddScore(-5);
+        SceneManager.LoadScene(returnSceneName);
     }
 
     private void OnWin()
     {
         isGameOver = true;
         ClearSquares();
-
-        if (!string.IsNullOrEmpty(winSceneName))
-            SceneManager.LoadScene(winSceneName);
+        GameSessionManager.Instance.AddScore(10);
+        SceneManager.LoadScene(returnSceneName);
     }
 
     private void UpdateRoundText()
@@ -161,8 +151,6 @@ public class ColorGame : MonoBehaviour
     private void GenerateGrid()
     {
         int index = 0;
-
-        // Calculamos startPosition para centrar la grilla en la cámara
         Vector2 startPosition = new Vector2(
             -((columns - 1) * cellSize.x) / 2f,
             ((rows - 1) * cellSize.y) / 2f
@@ -173,20 +161,18 @@ public class ColorGame : MonoBehaviour
             for (int c = 0; c < columns; c++)
             {
                 Vector2 pos2D = startPosition + new Vector2(c * cellSize.x, -r * cellSize.y);
-                Vector3 pos = new Vector3(pos2D.x, pos2D.y, 0f); // Z = 0
+                Vector3 pos = new Vector3(pos2D.x, pos2D.y, 0f);
 
                 GameObject go = Instantiate(squarePrefab, pos, Quaternion.identity, gridParent);
                 go.transform.localScale = Vector3.one * 0.9f;
 
-                BoxCollider2D col = go.GetComponent<BoxCollider2D>();
-                if (col == null) col = go.AddComponent<BoxCollider2D>();
-                col.size = new Vector2(1.5f, 1.5f);
+                if (go.GetComponent<BoxCollider2D>() == null)
+                    go.AddComponent<BoxCollider2D>().size = new Vector2(1.5f, 1.5f);
 
-                ColorSquare colorSquare = go.AddComponent<ColorSquare>();
-                colorSquare.index = index;
+                ColorSquare colorSquare = go.GetComponent<ColorSquare>() ?? go.AddComponent<ColorSquare>();
+                colorSquare.index = index++;
 
                 squares.Add(go);
-                index++;
             }
         }
     }
@@ -194,10 +180,7 @@ public class ColorGame : MonoBehaviour
     private void ClearSquares()
     {
         foreach (GameObject sq in squares)
-        {
-            if (sq != null)
-                Destroy(sq);
-        }
+            if (sq != null) Destroy(sq);
         squares.Clear();
     }
 }

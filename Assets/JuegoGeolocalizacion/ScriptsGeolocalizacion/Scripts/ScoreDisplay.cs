@@ -7,6 +7,9 @@ public class ScoreDisplay : MonoBehaviour
 
     void Update()
     {
-        scoreText.text = "PUNTOS: " + GameScore.Instance.score;
+        if (GameSessionManager.Instance != null)
+            scoreText.text = "PUNTOS: " + GameSessionManager.Instance.score;
+        else
+            scoreText.text = "PUNTOS: 0";
     }
 }

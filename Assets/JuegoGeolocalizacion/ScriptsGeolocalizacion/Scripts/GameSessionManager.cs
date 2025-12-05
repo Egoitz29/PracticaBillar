@@ -1,5 +1,5 @@
 using UnityEngine;
-using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class GameSessionManager : MonoBehaviour
 {
@@ -29,19 +29,15 @@ public class GameSessionManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
 
     void Start()
     {
-        player = GameObject.FindWithTag("Player").transform;
-
+        player = GameObject.FindWithTag("Player")?.transform;
         startTime = Time.time;
-        lastPlayerPos = player.position;
-
-        totalZones = 3;
+        lastPlayerPos = player != null ? player.position : Vector3.zero;
         visitedZones = 0;
         score = 0;
         totalDistance = 0f;
@@ -49,15 +45,17 @@ public class GameSessionManager : MonoBehaviour
 
     void Update()
     {
-        if (player == null) return;
-
-
-        GameScore.Instance.score = score;
+        if (player == null)
+        {
+            player = GameObject.FindWithTag("Player")?.transform;
+            if (player != null) lastPlayerPos = player.position;
+            return;
+        }
 
         TrackDistance();
-        ZoneVisited();
 
-        if (score >= 30)
+        // FIN DE CARRERA: 3 zonas O 30 puntos
+        if (visitedZones >= totalZones || score >= 30)
         {
             EndRun();
         }
@@ -65,8 +63,8 @@ public class GameSessionManager : MonoBehaviour
 
     void TrackDistance()
     {
+        if (player == null) return;
         float d = Vector3.Distance(player.position, lastPlayerPos);
-
         if (d > 0.1f)
         {
             totalDistance += d;
@@ -77,25 +75,21 @@ public class GameSessionManager : MonoBehaviour
     public void AddScore(int amount)
     {
         score += amount;
+        Debug.Log("Puntos añadidos: " + amount + " ? Total: " + score);
     }
 
     public void ZoneVisited()
     {
         visitedZones++;
-
-        if (visitedZones >= totalZones)
-            EndRun();
+        Debug.Log("Zona visitada: " + visitedZones + "/" + totalZones);
     }
 
     void EndRun()
     {
+        if (SceneManager.GetActiveScene().name == "FinCarrera") return; // Evita bucle
+
         totalTime = Time.time - startTime;
-
-        Debug.Log("CARRERA COMPLETADA");
-        Debug.Log("Tiempo total: " + totalTime);
-        Debug.Log("Distancia total: " + totalDistance);
-        Debug.Log("Puntuación final: " + score);
-
-        UnityEngine.SceneManagement.SceneManager.LoadScene("FinCarrera");
+        Debug.Log($"CARRERA TERMINADA - Tiempo: {totalTime:F1}s | Distancia: {totalDistance:F0}m | Puntos: {score}");
+        SceneManager.LoadScene("FinCarrera");
     }
 }
