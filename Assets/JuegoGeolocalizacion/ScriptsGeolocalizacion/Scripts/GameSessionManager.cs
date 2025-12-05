@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameSessionManager : MonoBehaviour
@@ -17,10 +17,11 @@ public class GameSessionManager : MonoBehaviour
     public float totalDistance = 0f;
     private Vector3 lastPlayerPos;
 
-    [Header("Puntuaci�n")]
+    [Header("Puntuación")]
     public int score = 0;
 
     private Transform player;
+    private bool runEnded = false; // ← Para evitar múltiples llamadas
 
     void Awake()
     {
@@ -41,6 +42,7 @@ public class GameSessionManager : MonoBehaviour
         visitedZones = 0;
         score = 0;
         totalDistance = 0f;
+        runEnded = false;
     }
 
     void Update()
@@ -54,10 +56,10 @@ public class GameSessionManager : MonoBehaviour
 
         TrackDistance();
 
-        // FIN DE CARRERA: 3 zonas O 30 puntos
-        if (visitedZones >= totalZones || score >= 30)
+        // TERMINAR PARTIDA AL VISITAR LAS 3 ZONAS
+        if (visitedZones >= totalZones && !runEnded)
         {
-            EndRun();
+            EndRun(); // ← ¡Esto es lo que querías!
         }
     }
 
@@ -75,21 +77,30 @@ public class GameSessionManager : MonoBehaviour
     public void AddScore(int amount)
     {
         score += amount;
-        Debug.Log("Puntos a�adidos: " + amount + " ? Total: " + score);
+        Debug.Log("Puntos: " + score);
     }
 
     public void ZoneVisited()
     {
+        if (runEnded) return;
+
         visitedZones++;
-        Debug.Log("Zona visitada: " + visitedZones + "/" + totalZones);
+        Debug.Log($"Zona visitada: {visitedZones}/{totalZones}");
+
+        // Opcional: también puedes terminar aquí directamente
+        // if (visitedZones >= totalZones) EndRun();
     }
 
-    void EndRun()
+    public void EndRun()
     {
-        if (SceneManager.GetActiveScene().name == "FinCarrera") return; // Evita bucle
+        if (runEnded) return;
+        runEnded = true;
 
         totalTime = Time.time - startTime;
-        Debug.Log($"CARRERA TERMINADA - Tiempo: {totalTime:F1}s | Distancia: {totalDistance:F0}m | Puntos: {score}");
-        SceneManager.LoadScene("FinCarrera");
+
+        Debug.Log($"CARRERA TERMINADA - ZONAS: {visitedZones}/3 | Puntos: {score} | Tiempo: {totalTime:F1}s");
+
+        // AQUÍ DECIDES A QUÉ ESCENA VAS
+        SceneManager.LoadScene("FinCarrera"); // ← Tu pantalla final (puedes llamarla "Victoria", "GameOver", etc.)
     }
 }
