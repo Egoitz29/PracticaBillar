@@ -21,7 +21,7 @@ public class GameSessionManager : MonoBehaviour
     public int score = 0;
 
     private Transform player;
-    private bool runEnded = false; // ← Para evitar múltiples llamadas
+    private bool runEnded = false; //  Para evitar múltiples llamadas
 
     void Awake()
     {
@@ -56,10 +56,9 @@ public class GameSessionManager : MonoBehaviour
 
         TrackDistance();
 
-        // TERMINAR PARTIDA AL VISITAR LAS 3 ZONAS
         if (visitedZones >= totalZones && !runEnded)
         {
-            EndRun(); // ← ¡Esto es lo que querías!
+            EndRun(); 
         }
     }
 
@@ -87,7 +86,6 @@ public class GameSessionManager : MonoBehaviour
         visitedZones++;
         Debug.Log($"Zona visitada: {visitedZones}/{totalZones}");
 
-        // Opcional: también puedes terminar aquí directamente
         // if (visitedZones >= totalZones) EndRun();
     }
 
@@ -100,7 +98,6 @@ public class GameSessionManager : MonoBehaviour
 
         Debug.Log($"CARRERA TERMINADA - ZONAS: {visitedZones}/3 | Puntos: {score} | Tiempo: {totalTime:F1}s");
 
-        // AQUÍ DECIDES A QUÉ ESCENA VAS
-        SceneManager.LoadScene("FinCarrera"); // ← Tu pantalla final (puedes llamarla "Victoria", "GameOver", etc.)
+        SceneManager.LoadScene("FinCarrera"); 
     }
 }
