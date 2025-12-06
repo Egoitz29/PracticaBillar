@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class GameSessionManager : MonoBehaviour
 {
@@ -7,7 +8,10 @@ public class GameSessionManager : MonoBehaviour
 
     [Header("Carrera")]
     public int totalZones = 3;
-    public int visitedZones = 0;
+    private int visitedZones = 0;
+
+    // ← NUEVO: Lista para saber qué zonas ya han sido completadas
+    private HashSet<int> completedZoneIds = new HashSet<int>();
 
     [Header("Tiempo")]
     public float startTime;
@@ -21,10 +25,11 @@ public class GameSessionManager : MonoBehaviour
     public int score = 0;
 
     private Transform player;
-    private bool runEnded = false; // ← Para evitar múltiples llamadas
+    private bool runEnded = false;
 
     void Awake()
     {
+        // Singleton clásico
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -39,7 +44,10 @@ public class GameSessionManager : MonoBehaviour
         player = GameObject.FindWithTag("Player")?.transform;
         startTime = Time.time;
         lastPlayerPos = player != null ? player.position : Vector3.zero;
+
+        // Reiniciamos todo al empezar una nueva carrera
         visitedZones = 0;
+        completedZoneIds.Clear();
         score = 0;
         totalDistance = 0f;
         runEnded = false;
@@ -56,16 +64,17 @@ public class GameSessionManager : MonoBehaviour
 
         TrackDistance();
 
-        // TERMINAR PARTIDA AL VISITAR LAS 3 ZONAS
+        // Cuando ya hemos completado las 3 zonas → Game Over / Fin
         if (visitedZones >= totalZones && !runEnded)
         {
-            EndRun(); // ← ¡Esto es lo que querías!
+            EndRun();
         }
     }
 
     void TrackDistance()
     {
         if (player == null) return;
+
         float d = Vector3.Distance(player.position, lastPlayerPos);
         if (d > 0.1f)
         {
@@ -80,15 +89,40 @@ public class GameSessionManager : MonoBehaviour
         Debug.Log("Puntos: " + score);
     }
 
+    /// <summary>
+    /// Llamar desde el trigger o script del minijuego cuando el jugador lo completa.
+    /// El parámetro zoneId debe ser único por zona (por ejemplo 0, 1 o 2).
+    /// </summary>
+    public bool TryCompleteZone(int zoneId)
+    {
+        if (runEnded) return false;
+
+        // Si ya estaba completada → no hacemos nada y devolvemos false
+        if (completedZoneIds.Contains(zoneId))
+        {
+            Debug.LogWarning($"Zona {zoneId} ya fue completada anteriormente.");
+            return false;
+        }
+
+        // Primera vez que se completa esta zona
+        completedZoneIds.Add(zoneId);
+        visitedZones++;
+
+        Debug.Log($"Zona {zoneId} completada → {visitedZones}/{totalZones} zonas");
+
+        // Opcional: dar puntos por completar zona
+        // AddScore(500);
+
+        return true;
+    }
+
+    // Versión antigua por si todavía la usas en algún sitio (la dejamos pero recomendada es TryCompleteZone)
+    [System.Obsolete("Usa TryCompleteZone(int zoneId) para evitar repeticiones")]
     public void ZoneVisited()
     {
         if (runEnded) return;
-
         visitedZones++;
-        Debug.Log($"Zona visitada: {visitedZones}/{totalZones}");
-
-        // Opcional: también puedes terminar aquí directamente
-        // if (visitedZones >= totalZones) EndRun();
+        Debug.LogWarning("ZoneVisited() está obsoleto. Usa TryCompleteZone(zoneId) para evitar que se repita el minijuego.");
     }
 
     public void EndRun()
@@ -98,9 +132,17 @@ public class GameSessionManager : MonoBehaviour
 
         totalTime = Time.time - startTime;
 
-        Debug.Log($"CARRERA TERMINADA - ZONAS: {visitedZones}/3 | Puntos: {score} | Tiempo: {totalTime:F1}s");
+        Debug.Log($"=== CARRERA TERMINADA ===");
+        Debug.Log($"Zonas completadas: {visitedZones}/{totalZones}");
+        Debug.Log($"Puntuación: {score}");
+        Debug.Log($"Tiempo: {totalTime:F1}s");
+        Debug.Log($"Distancia recorrida: {totalDistance:F1}m");
 
-        // AQUÍ DECIDES A QUÉ ESCENA VAS
-        SceneManager.LoadScene("FinCarrera"); // ← Tu pantalla final (puedes llamarla "Victoria", "GameOver", etc.)
+        // Aquí cambias el nombre de la escena según lo que quieras
+        SceneManager.LoadScene("FinCarrera"); // o "GameOver", "Victoria", etc.
     }
+
+    // Útil para debug o UI
+    public int GetCompletedZones() => visitedZones;
+    public bool IsZoneCompleted(int zoneId) => completedZoneIds.Contains(zoneId);
 }
