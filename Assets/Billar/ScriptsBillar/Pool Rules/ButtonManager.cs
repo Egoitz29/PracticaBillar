@@ -34,6 +34,12 @@ public class ButtonManager : MonoBehaviour
         Screen.orientation = ScreenOrientation.Portrait; 
         SceneManager.LoadScene("Juego2"); 
     }
+    public void CargarJuego3()
+    {
+        Debug.Log("Cargando escena: Juego3...");
+        Screen.orientation = ScreenOrientation.Portrait;
+        SceneManager.LoadScene("Juego3");
+    }
 
     // Botón "Opciones"
     public void BotonOpciones()
