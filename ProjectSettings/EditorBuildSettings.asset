@@ -33,5 +33,9 @@ EditorBuildSettings:
     path: Assets/Scenes/MiniElegirColor.unity
     guid: 5fd3da9fc41f64844ac4ba024696a7e5
   m_configObjects:
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 3f29784b5fd1d8748bdd2eddc8eb0c7a, type: 2}
+    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 78789c3352d3d4a41a7d9eb379af1ede, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: d8ddcc1485daebb438840132e38eb102, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 7f7c6f7a4b5751d41b3fcda69a8f2edd, type: 2}
   m_UseUCBPForAssetBundles: 0
