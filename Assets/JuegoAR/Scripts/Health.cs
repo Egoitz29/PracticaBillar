@@ -13,6 +13,7 @@ public class Health : MonoBehaviour
     public void TakeDamage(float amount)
     {
         currentHealth -= amount;
+
         Debug.Log(gameObject.name + " recibió " + amount + " de daño. Vida actual: " + currentHealth);
 
         if (currentHealth <= 0)
@@ -24,6 +25,6 @@ public class Health : MonoBehaviour
     void Die()
     {
         Debug.Log(gameObject.name + " ha muerto.");
-        Destroy(gameObject); // o animación de destrucción
+        Destroy(gameObject);
     }
 }
