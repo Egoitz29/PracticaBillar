@@ -249,7 +249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9fe0a474d8d45c499e10a22a252be69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imageManager: {fileID: 0}
+  imageManager: {fileID: 275570823}
   basePrefab: {fileID: 6247003780488317453, guid: 2448a3c113343d241bc15190067e18cc, type: 3}
 --- !u!4 &637045448
 Transform:
