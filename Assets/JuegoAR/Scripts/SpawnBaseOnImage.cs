@@ -1,40 +1,33 @@
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 
-public class SpawnBaseOnImage : MonoBehaviour
+public class ImageArrowSpawner : MonoBehaviour
 {
-    public ARTrackedImageManager imageManager;
-    public GameObject basePrefab;
+    public ARTrackedImageManager trackedImageManager;
+    public GameObject arrowPrefab;
 
-    private GameObject spawnedBase;
+    private bool arrowSpawned = false;
 
     void OnEnable()
     {
-        imageManager.trackedImagesChanged += OnChanged;
+        trackedImageManager.trackedImagesChanged += OnImageChanged;
     }
 
     void OnDisable()
     {
-        imageManager.trackedImagesChanged -= OnChanged;
+        trackedImageManager.trackedImagesChanged -= OnImageChanged;
     }
 
-    void OnChanged(ARTrackedImagesChangedEventArgs args)
+    void OnImageChanged(ARTrackedImagesChangedEventArgs args)
     {
-        foreach (var trackedImage in args.added)
-        {
-            if (spawnedBase == null)
-            {
-                spawnedBase = Instantiate(basePrefab, trackedImage.transform.position, trackedImage.transform.rotation);
-            }
-        }
+        if (arrowSpawned) return;
 
-        foreach (var trackedImage in args.updated)
+        foreach (var image in args.added)
         {
-            if (spawnedBase != null)
-            {
-                spawnedBase.transform.position = trackedImage.transform.position;
-                spawnedBase.transform.rotation = trackedImage.transform.rotation;
-            }
+            // Instanciar una flecha en relación a la imagen
+            GameObject arrow = Instantiate(arrowPrefab, image.transform);
+            arrowSpawned = true;
+            break; // solo una flecha
         }
     }
 }
