@@ -357,8 +357,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9fe0a474d8d45c499e10a22a252be69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< HEAD
   trackedImageManager: {fileID: 0}
   arrowPrefab: {fileID: 0}
+=======
+  trackedImageManager: {fileID: 275570823}
+  arrowPrefab: {fileID: 266840175866606621, guid: d4c6ae073cd7c5c4c84973eb05da70ec, type: 3}
+>>>>>>> origin/main
 --- !u!4 &637045448
 Transform:
   m_ObjectHideFlags: 0
