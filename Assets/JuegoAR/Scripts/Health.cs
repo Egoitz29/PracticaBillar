@@ -3,7 +3,10 @@ using UnityEngine;
 public class Health : MonoBehaviour
 {
     public float maxHealth = 100f;
-    private float currentHealth;
+    public float currentHealth;
+
+    public int coinReward = 1;
+    public float towerDamage = 10f;
 
     void Awake()
     {
@@ -14,17 +17,15 @@ public class Health : MonoBehaviour
     {
         currentHealth -= amount;
 
-        Debug.Log(gameObject.name + " recibió " + amount + " de daño. Vida actual: " + currentHealth);
-
         if (currentHealth <= 0)
         {
             Die();
         }
     }
 
-    void Die()
+    public void Die()
     {
-        Debug.Log(gameObject.name + " ha muerto.");
+        GameManagerVR.Instance.AddCoins(coinReward);
         Destroy(gameObject);
     }
 }
