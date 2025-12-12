@@ -1,9 +1,10 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CircularEnemySpawner : MonoBehaviour
 {
     [Header("Tower (centro)")]
     public Transform tower;
+    public TowerHealth towerHealth;
 
     [Header("Tipos de enemigos")]
     public GameObject enemyNormal;
@@ -19,18 +20,32 @@ public class CircularEnemySpawner : MonoBehaviour
     public float difficultyStep = 0.1f;
 
     private float currentInterval;
+    private bool isActive = false;
 
     void Start()
     {
         currentInterval = initialInterval;
-        Invoke(nameof(SpawnLoop), currentInterval);
+    }
+
+    // 🔹 Controlado por RoundManager
+    public void SetActive(bool value)
+    {
+        isActive = value;
+
+        CancelInvoke();
+
+        if (isActive)
+        {
+            Invoke(nameof(SpawnLoop), currentInterval);
+        }
     }
 
     void SpawnLoop()
     {
+        if (!isActive) return;
+
         SpawnEnemy();
 
-        // Aumentar dificultad progresiva
         currentInterval -= difficultyStep;
         if (currentInterval < minInterval)
             currentInterval = minInterval;
@@ -40,7 +55,8 @@ public class CircularEnemySpawner : MonoBehaviour
 
     void SpawnEnemy()
     {
-        // �ngulo aleatorio alrededor de la torre
+        if (tower == null || towerHealth == null) return;
+
         float angle = Random.Range(0f, 360f);
         float rad = angle * Mathf.Deg2Rad;
 
@@ -51,11 +67,21 @@ public class CircularEnemySpawner : MonoBehaviour
         );
 
         GameObject prefab = ChooseEnemyByDifficulty();
-
         GameObject enemy = Instantiate(prefab, spawnPos, Quaternion.identity);
 
-        // Darle a cada enemigo la torre como objetivo
-        enemy.GetComponent<EnemyMoveToTarget>().target = tower;
+        // 🔗 Asignar TARGET a cualquier tipo de movimiento
+        EnemyMoveToTarget moveNormal = enemy.GetComponent<EnemyMoveToTarget>();
+        if (moveNormal != null)
+            moveNormal.SetTarget(tower);
+
+        EnemyZigZagToTarget moveZigZag = enemy.GetComponent<EnemyZigZagToTarget>();
+        if (moveZigZag != null)
+            moveZigZag.SetTarget(tower);
+
+        // 🔗 Asignar TORRE para el daño
+        EnemyDamageTower damageTower = enemy.GetComponent<EnemyDamageTower>();
+        if (damageTower != null)
+            damageTower.SetTower(towerHealth);
     }
 
     GameObject ChooseEnemyByDifficulty()

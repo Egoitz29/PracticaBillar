@@ -1,10 +1,11 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class EnemyMoveToTarget : MonoBehaviour
 {
-    public Transform target;   // El objeto al que debe ir
+    [Header("Movimiento")]
     public float speed = 1.5f;
-    public float destroyDistance = 0.2f;
+
+    private Transform target;
 
     void Update()
     {
@@ -16,14 +17,11 @@ public class EnemyMoveToTarget : MonoBehaviour
             target.position,
             speed * Time.deltaTime
         );
+    }
 
-        // Si llega al objetivo -> se destruye
-        float distance = Vector3.Distance(transform.position, target.position);
-
-        if (distance <= destroyDistance)
-        {
-            Debug.Log("El enemigo lleg� al objetivo y se destruye.");
-            Destroy(gameObject);
-        }
+    // 🔗 El spawner llamará a esto
+    public void SetTarget(Transform newTarget)
+    {
+        target = newTarget;
     }
 }

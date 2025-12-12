@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6857694784211875468}
   - component: {fileID: 7246847963347124229}
   - component: {fileID: 4635935164024779752}
+  - component: {fileID: 9010965061933661728}
   m_Layer: 0
   m_Name: MedioEnemigo
   m_TagString: Untagged
@@ -67,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 32a4a5757b6864e4f922511a23df264d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -123,6 +124,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 80
+  currentHealth: 0
+  coinReward: 2
+  towerDamage: 250
 --- !u!114 &4635935164024779752
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,6 +139,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e9fbfbbec2effa4ea414d7ef456669a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
   speed: 8
-  destroyDistance: 0.2
+--- !u!114 &9010965061933661728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4278544812639227585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc0648c78476e5a429482109909c16d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageToTower: 10
+  reachDistance: 1.2

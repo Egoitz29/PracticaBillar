@@ -5,21 +5,32 @@ public class TowerHealth : MonoBehaviour
     public float maxHealth = 300f;
     public float currentHealth;
 
+    private bool isDestroyed = false;
+
     void Start()
     {
         currentHealth = maxHealth;
-        UIManagerVR.Instance.UpdateTowerHealth(currentHealth);
+
+        if (UIManagerVR.Instance != null)
+            UIManagerVR.Instance.UpdateTowerHealth(currentHealth);
     }
 
     public void TakeDamage(float amount)
     {
+        if (isDestroyed) return;
+
         currentHealth -= amount;
-        UIManagerVR.Instance.UpdateTowerHealth(currentHealth);
+
+        if (currentHealth < 0)
+            currentHealth = 0;
+
+        if (UIManagerVR.Instance != null)
+            UIManagerVR.Instance.UpdateTowerHealth(currentHealth);
 
         if (currentHealth <= 0)
         {
-            Debug.Log("La torre ha sido destruida.");
-            // Aquí puedes poner Game Over
+            isDestroyed = true;
+            GameManagerVR.Instance.GameOver();
         }
     }
 }

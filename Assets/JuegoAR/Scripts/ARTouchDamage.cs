@@ -1,11 +1,8 @@
 using UnityEngine;
-using UnityEngine.XR.ARFoundation;
-using UnityEngine.XR.ARSubsystems;
 
 public class ARTouchDamage : MonoBehaviour
 {
-    [SerializeField] private Camera arCamera; // La cámara de AR
-    [SerializeField] private float damageAmount = 10f;
+    [SerializeField] private Camera arCamera;
 
     void Update()
     {
@@ -16,14 +13,17 @@ public class ARTouchDamage : MonoBehaviour
             if (touch.phase == TouchPhase.Began)
             {
                 Ray ray = arCamera.ScreenPointToRay(touch.position);
+
                 if (Physics.Raycast(ray, out RaycastHit hit))
                 {
-                    // Intentamos obtener un componente de vida
                     Health targetHealth = hit.collider.GetComponent<Health>();
+
                     if (targetHealth != null)
                     {
-                        targetHealth.TakeDamage(damageAmount);
-                        Debug.Log("Daño aplicado a: " + hit.collider.name);
+                        float damage = PlayerStats.Instance.CurrentDamage;
+                        targetHealth.TakeDamage(damage);
+
+                        Debug.Log("Daño aplicado: " + damage);
                     }
                 }
             }
