@@ -13,12 +13,18 @@ public class GameManagerVR : MonoBehaviour
 
     void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
     }
 
     void Start()
     {
+        // Asegura que el juego nunca arranca pausado
+        Time.timeScale = 1f;
+        isGameOver = false;
+
         if (UIManagerVR.Instance != null)
         {
             UIManagerVR.Instance.UpdateCoins(coins);
@@ -31,6 +37,7 @@ public class GameManagerVR : MonoBehaviour
         }
     }
 
+    // ---------- ECONOMÍA ----------
     public void AddCoins(int amount)
     {
         if (isGameOver) return;
@@ -58,7 +65,6 @@ public class GameManagerVR : MonoBehaviour
         if (coins >= damageUpgradeCost && PlayerStats.Instance != null)
         {
             coins -= damageUpgradeCost;
-
             PlayerStats.Instance.UpgradeDamage();
 
             if (UIManagerVR.Instance != null)
@@ -70,7 +76,7 @@ public class GameManagerVR : MonoBehaviour
         }
     }
 
-    // -------- GAME OVER --------
+    // ---------- GAME OVER ----------
     public void GameOver()
     {
         if (isGameOver) return;
@@ -85,10 +91,10 @@ public class GameManagerVR : MonoBehaviour
         if (spawner != null)
             spawner.SetActive(false);
 
-        // Pausar el juego
+        // Pausar juego
         Time.timeScale = 0f;
 
-        // Mostrar pantalla final con estadísticas
+        // Mostrar UI final
         if (UIManagerVR.Instance != null &&
             PlayerStats.Instance != null &&
             RoundManager.Instance != null)

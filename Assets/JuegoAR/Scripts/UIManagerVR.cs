@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class UIManagerVR : MonoBehaviour
 {
@@ -27,10 +28,13 @@ public class UIManagerVR : MonoBehaviour
 
     void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
     }
 
+    // ---------- HUD ----------
     public void UpdateCoins(int amount)
     {
         if (coinsText != null)
@@ -79,7 +83,7 @@ public class UIManagerVR : MonoBehaviour
             timerText.gameObject.SetActive(!active);
     }
 
-    // -------- GAME OVER UI --------
+    // ---------- GAME OVER ----------
     public void ShowGameOver(int round, int coins, float damage)
     {
         if (gameOverPanel != null)
@@ -93,5 +97,18 @@ public class UIManagerVR : MonoBehaviour
 
         if (damageStatText != null)
             damageStatText.text = "Daño final: " + Mathf.CeilToInt(damage);
+    }
+
+    // ---------- BOTONES ----------
+    public void RestartGame()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void GoToMainMenu()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("Menu");
     }
 }

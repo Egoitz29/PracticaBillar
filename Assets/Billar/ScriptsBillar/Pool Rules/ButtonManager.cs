@@ -37,7 +37,6 @@ public class ButtonManager : MonoBehaviour
     public void CargarJuego3()
     {
         Debug.Log("Cargando escena: Juego3...");
-        Screen.orientation = ScreenOrientation.Portrait;
         SceneManager.LoadScene("Juego3");
     }
 
