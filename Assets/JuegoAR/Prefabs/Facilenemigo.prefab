@@ -123,7 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a994bf9afb7f6c247914219f2779423c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 50
   currentHealth: 0
   coinReward: 1
   towerDamage: 5
@@ -139,7 +139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e9fbfbbec2effa4ea414d7ef456669a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 4
 --- !u!114 &-9050545479561146211
 MonoBehaviour:
   m_ObjectHideFlags: 0

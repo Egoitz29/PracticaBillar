@@ -2845,8 +2845,8 @@ MonoBehaviour:
   enemyFast: {fileID: 4278544812639227585, guid: c7401c6c6ad772f4bb4613f67c7a1c0b, type: 3}
   enemyZigZag: {fileID: 9154124641282308326, guid: a4ddc095d30fc7842b65db59354cddc0, type: 3}
   spawnRadius: 30
-  initialInterval: 3
-  minInterval: 1
+  initialInterval: 3.5
+  minInterval: 1.5
   difficultyStep: 0.1
 --- !u!4 &906288159
 Transform:
@@ -3519,7 +3519,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 350.34094, y: -1063.2769}
+  m_AnchoredPosition: {x: 350.34094, y: -305}
   m_SizeDelta: {x: 230.9881, y: 42.4306}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1787748337
