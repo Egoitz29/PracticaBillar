@@ -2,8 +2,10 @@
 
 public class CircularEnemySpawner : MonoBehaviour
 {
-    [Header("Tower (centro)")]
-    public Transform tower;
+    public static CircularEnemySpawner Instance;
+
+    [Header("Torre (TargetZone)")]
+    public TargetZone targetZone;
     public TowerHealth towerHealth;
 
     [Header("Tipos de enemigos")]
@@ -12,7 +14,7 @@ public class CircularEnemySpawner : MonoBehaviour
     public GameObject enemyZigZag;
 
     [Header("Spawn circular")]
-    public float spawnRadius = 10f;
+    public float spawnRadius = 1.5f;
 
     [Header("Dificultad")]
     public float initialInterval = 4f;
@@ -22,27 +24,29 @@ public class CircularEnemySpawner : MonoBehaviour
     private float currentInterval;
     private bool isActive = false;
 
+    void Awake()
+    {
+        Instance = this;
+    }
+
     void Start()
     {
         currentInterval = initialInterval;
+        isActive = false; // No activo al inicio
     }
 
-    // 🔹 Controlado por RoundManager
     public void SetActive(bool value)
     {
         isActive = value;
-
         CancelInvoke();
 
-        if (isActive)
-        {
+        if (isActive && targetZone != null)
             Invoke(nameof(SpawnLoop), currentInterval);
-        }
     }
 
     void SpawnLoop()
     {
-        if (!isActive) return;
+        if (!isActive || targetZone == null) return;
 
         SpawnEnemy();
 
@@ -55,30 +59,32 @@ public class CircularEnemySpawner : MonoBehaviour
 
     void SpawnEnemy()
     {
-        if (tower == null || towerHealth == null) return;
+        if (targetZone == null || towerHealth == null) return;
 
         float angle = Random.Range(0f, 360f);
         float rad = angle * Mathf.Deg2Rad;
 
+        Vector3 center = targetZone.transform.position;
+
         Vector3 spawnPos = new Vector3(
-            tower.position.x + Mathf.Cos(rad) * spawnRadius,
-            tower.position.y,
-            tower.position.z + Mathf.Sin(rad) * spawnRadius
+            center.x + Mathf.Cos(rad) * spawnRadius,
+            center.y,
+            center.z + Mathf.Sin(rad) * spawnRadius
         );
 
         GameObject prefab = ChooseEnemyByDifficulty();
         GameObject enemy = Instantiate(prefab, spawnPos, Quaternion.identity);
 
-        // 🔗 Asignar TARGET a cualquier tipo de movimiento
+        // Asignar TargetZone como objetivo
         EnemyMoveToTarget moveNormal = enemy.GetComponent<EnemyMoveToTarget>();
         if (moveNormal != null)
-            moveNormal.SetTarget(tower);
+            moveNormal.SetTarget(targetZone.transform);
 
         EnemyZigZagToTarget moveZigZag = enemy.GetComponent<EnemyZigZagToTarget>();
         if (moveZigZag != null)
-            moveZigZag.SetTarget(tower);
+            moveZigZag.SetTarget(targetZone.transform);
 
-        // 🔗 Asignar TORRE para el daño
+        // Asignar daño a la torre
         EnemyDamageTower damageTower = enemy.GetComponent<EnemyDamageTower>();
         if (damageTower != null)
             damageTower.SetTower(towerHealth);
@@ -90,7 +96,6 @@ public class CircularEnemySpawner : MonoBehaviour
 
         if (time < 20f)
             return enemyNormal;
-
         if (time < 40f)
             return Random.value < 0.7f ? enemyNormal : enemyFast;
 

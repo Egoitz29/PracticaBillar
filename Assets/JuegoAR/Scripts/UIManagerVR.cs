@@ -26,12 +26,36 @@ public class UIManagerVR : MonoBehaviour
     public TextMeshProUGUI coinsStatText;
     public TextMeshProUGUI damageStatText;
 
+    [Header("Ronda")]
+    public float roundDuration = 30f; // Duración de la primera ronda
+    private float remainingRoundTime;
+    private bool roundActive = false;
+
     void Awake()
     {
         if (Instance == null)
             Instance = this;
         else
             Destroy(gameObject);
+    }
+
+    void Update()
+    {
+        if (!roundActive) return;
+
+        // Reducir tiempo restante
+        remainingRoundTime -= Time.deltaTime;
+        if (remainingRoundTime < 0)
+            remainingRoundTime = 0;
+
+        // Actualizar UI
+        UpdateTimer(remainingRoundTime);
+
+        // Fin de ronda
+        if (remainingRoundTime <= 0)
+        {
+            EndRound();
+        }
     }
 
     // ---------- HUD ----------
@@ -81,6 +105,28 @@ public class UIManagerVR : MonoBehaviour
 
         if (timerText != null)
             timerText.gameObject.SetActive(!active);
+    }
+
+    // ---------- RONDA ----------
+    public void StartRound()
+    {
+        remainingRoundTime = roundDuration;
+        roundActive = true;
+
+        // Activar spawn de enemigos
+        if (CircularEnemySpawner.Instance != null)
+            CircularEnemySpawner.Instance.SetActive(true);
+    }
+
+    private void EndRound()
+    {
+        roundActive = false;
+
+        // Desactivar spawn
+        if (CircularEnemySpawner.Instance != null)
+            CircularEnemySpawner.Instance.SetActive(false);
+
+        Debug.Log("¡Ronda terminada!");
     }
 
     // ---------- GAME OVER ----------

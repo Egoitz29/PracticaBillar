@@ -2,26 +2,33 @@
 
 public class EnemyMoveToTarget : MonoBehaviour
 {
-    [Header("Movimiento")]
     public float speed = 1.5f;
 
     private Transform target;
+    private TargetZone targetZone;
 
     void Update()
     {
-        if (target == null) return;
+        if (target == null || targetZone == null) return;
 
-        // Mover hacia el objetivo
-        transform.position = Vector3.MoveTowards(
-            transform.position,
-            target.position,
-            speed * Time.deltaTime
-        );
+        // Mantener la altura de la torre
+        Vector3 targetPos = new Vector3(target.position.x, transform.position.y, target.position.z);
+
+        float distance = Vector3.Distance(new Vector3(transform.position.x, transform.position.y, transform.position.z), targetPos);
+
+        if (distance <= targetZone.radius)
+            return;
+
+        Vector3 direction = (targetPos - transform.position).normalized;
+        transform.position += direction * speed * Time.deltaTime;
+
+        if (direction != Vector3.zero)
+            transform.rotation = Quaternion.LookRotation(direction);
     }
 
-    // 🔗 El spawner llamará a esto
     public void SetTarget(Transform newTarget)
     {
         target = newTarget;
+        targetZone = newTarget.GetComponent<TargetZone>();
     }
 }

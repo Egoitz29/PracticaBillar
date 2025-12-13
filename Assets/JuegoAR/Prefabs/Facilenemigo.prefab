@@ -152,5 +152,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc0648c78476e5a429482109909c16d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageToTower: 10
+  damageToTower: 5
   reachDistance: 1.2
