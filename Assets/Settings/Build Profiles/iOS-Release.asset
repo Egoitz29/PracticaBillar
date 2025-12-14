@@ -165,7 +165,17 @@ MonoBehaviour:
     - line: '|   visionOSBundleVersion: 1.0'
     - line: '|   tvOSBundleVersion: 1.0'
     - line: '|   bundleVersion: 1.0'
-    - line: '|   preloadedAssets: []'
+    - line: '|   preloadedAssets:'
+    - line: '|   - {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100,
+        type: 3}'
+    - line: '|   - {fileID: 4800000, guid: e7c77f6eaab324a819efdc13b8125a39, type:
+        3}'
+    - line: '|   - {fileID: 4800000, guid: 6743a50a812740be8c0aa3fccc46fae9, type:
+        3}'
+    - line: '|   - {fileID: 5936863510698756409, guid: 7f7c6f7a4b5751d41b3fcda69a8f2edd,
+        type: 2}'
+    - line: '|   - {fileID: 11400000, guid: d8ddcc1485daebb438840132e38eb102, type:
+        2}'
     - line: '|   metroInputSource: 0'
     - line: '|   wsaTransparentSwapchain: 0'
     - line: '|   m_HolographicPauseOnTrackingLoss: 1'
@@ -548,8 +558,12 @@ MonoBehaviour:
     - line: '|   enableInternalProfiler: 0'
     - line: '|   logObjCUncaughtExceptions: 1'
     - line: '|   enableCrashReportAPI: 0'
-    - line: '|   cameraUsageDescription: '
-    - line: '|   locationUsageDescription: '
+    - line: '|   cameraUsageDescription: This app uses the camera to detect real-world
+        surfaces'
+    - line: '|     for augmented reality.'
+    - line: '|   locationUsageDescription: ''This app uses your location to enhance
+        the augmented'
+    - line: '|     reality experience. '''
     - line: '|   microphoneUsageDescription: '
     - line: '|   bluetoothUsageDescription: '
     - line: '|   macOSTargetOSVersion: 11.0'

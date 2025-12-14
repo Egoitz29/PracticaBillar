@@ -23,7 +23,7 @@ MonoBehaviour:
     m_SerializedTextureGuid:
       m_GuidLow: 16925818854542644756
       m_GuidHigh: 11655169168814420184
-    m_Size: {x: 0, y: 0}
-    m_SpecifySize: 0
+    m_Size: {x: 30, y: 30}
+    m_SpecifySize: 1
     m_Name: imagen_monstruo
     m_Texture: {fileID: 0}
