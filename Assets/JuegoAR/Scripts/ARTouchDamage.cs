@@ -3,6 +3,8 @@ using UnityEngine;
 public class ARTouchDamage : MonoBehaviour
 {
     [SerializeField] private Camera arCamera;
+    public AudioSource AudioSource;
+    public AudioClip HitSound;
 
     void Update()
     {
@@ -24,6 +26,7 @@ public class ARTouchDamage : MonoBehaviour
                         targetHealth.TakeDamage(damage);
 
                         Debug.Log("Daño aplicado: " + damage);
+                        AudioSource.PlayOneShot(HitSound);
                     }
                 }
             }
