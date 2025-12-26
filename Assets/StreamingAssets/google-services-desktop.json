@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "412755113416",
+    "project_id": "pjm-unity",
+    "storage_bucket": "pjm-unity.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:412755113416:android:ee05ef6ef7f8df97e37cfd",
+        "android_client_info": {
+          "package_name": "com.euneiz.pjm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB59D4aishSCs0HcQMO1TVdJjVbxxVhiPA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

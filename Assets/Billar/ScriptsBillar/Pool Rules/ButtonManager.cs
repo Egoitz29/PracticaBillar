@@ -40,6 +40,11 @@ public class ButtonManager : MonoBehaviour
         SceneManager.LoadScene("Juego3");
     }
 
+    public void CargarJuego4()
+    {
+        Debug.Log("Cargando escena: Juego4...");
+        SceneManager.LoadScene("MenuDDOL");
+    }
     // Botón "Opciones"
     public void BotonOpciones()
     {
