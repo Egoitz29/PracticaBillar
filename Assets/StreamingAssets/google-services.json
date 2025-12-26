@@ -12,7 +12,20 @@
           "package_name": "com.euneiz.pjm"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "412755113416-49r2ssok0ac9l9c9453gpm4ft8835qne.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.euneiz.pjm",
+            "certificate_hash": "c1d09427263d9e5785388a292099ad841ebe4de2"
+          }
+        },
+        {
+          "client_id": "412755113416-0gosj67b5a16thqhddi2b2aphakfih28.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyB59D4aishSCs0HcQMO1TVdJjVbxxVhiPA"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "412755113416-0gosj67b5a16thqhddi2b2aphakfih28.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

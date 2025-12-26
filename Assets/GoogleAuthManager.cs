@@ -14,20 +14,25 @@ public class GoogleAuthManager : MonoBehaviour
     // Llamar a este método desde un botón
     public void LoginWithGoogle()
     {
-#if UNITY_ANDROID && !UNITY_EDITOR
-        using (AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
-        {
-            AndroidJavaObject activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+        Debug.Log("BOTÓN PULSADO");
 
-            using (AndroidJavaClass bridge = new AndroidJavaClass("com.euneiz.googlesignin.GoogleSignInBridge"))
-            {
-                bridge.CallStatic("startSignIn", activity);
-            }
+#if UNITY_ANDROID && !UNITY_EDITOR
+    string webClientId = "PEGA_AQUÍ_TU_WEB_CLIENT_ID";
+
+    using (AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
+    {
+        AndroidJavaObject activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+
+        using (AndroidJavaClass bridge = new AndroidJavaClass("com.euneiz.googlesignin.GoogleSignInBridge"))
+        {
+            bridge.CallStatic("startSignIn", activity, webClientId);
         }
+    }
 #else
         Debug.Log("Login con Google solo funciona en Android real");
 #endif
     }
+
 
     // ESTE método lo llama el puente Android
     public void OnGoogleSignInSuccess(string idToken)
