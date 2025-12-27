@@ -3027,7 +3027,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc026f4c9e551834180c8e49b7b97bab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trackedImageManager: {fileID: 0}
+  trackedImageManager: {fileID: 1530095386}
   boxPrefab: {fileID: 5262707152425372407, guid: c33b8c4202e9b6d49b8f2ed1f9054fc1, type: 3}
 --- !u!4 &1285520762
 Transform:
