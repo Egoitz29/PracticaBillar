@@ -98,6 +98,17 @@ public class GameSessionManager : MonoBehaviour
 
         Debug.Log($"CARRERA TERMINADA - ZONAS: {visitedZones}/3 | Puntos: {score} | Tiempo: {totalTime:F1}s");
 
-        SceneManager.LoadScene("FinCarrera"); 
+        //  GUARDAR RESULTADO EN FIREBASE (JUEGO 2)
+        if (FirebaseDataManager.Instance != null)
+        {
+            FirebaseDataManager.Instance.SaveGameScore(2, score);
+            Debug.Log($" Juego 2 guardado → Score: {score}");
+        }
+        else
+        {
+            Debug.LogWarning(" FirebaseDataManager no disponible");
+        }
+
+        SceneManager.LoadScene("FinCarrera");
     }
 }

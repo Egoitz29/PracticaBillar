@@ -6,7 +6,10 @@ public class FirebaseManager : MonoBehaviour
 {
     public static FirebaseManager Instance;
 
-    void Awake()
+    [Header("Estado Firebase")]
+    public bool firebaseReady = false;
+
+    private void Awake()
     {
         if (Instance == null)
         {
@@ -28,11 +31,13 @@ public class FirebaseManager : MonoBehaviour
         {
             if (task.Result == DependencyStatus.Available)
             {
-                Debug.Log("Firebase inicializado correctamente");
+                firebaseReady = true;
+                Debug.Log(" Firebase inicializado correctamente");
             }
             else
             {
-                Debug.LogError("Firebase no pudo inicializarse: " + task.Result);
+                firebaseReady = false;
+                Debug.LogError(" Firebase no pudo inicializarse: " + task.Result);
             }
         });
     }

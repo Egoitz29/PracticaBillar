@@ -72,10 +72,16 @@ public class GameManager : MonoBehaviour
             ReiniciarRonda();
         }
 
-        //  Nueva condición: sin tiros, bolas quietas y sin haber llegado a la meta → GameOver
         if (tirosRestantes <= 0 && TodasLasBolasQuietas() && puntosJugador < puntosRequeridos)
         {
-            Debug.Log(" Sin tiros y sin alcanzar la meta → Cargando escena GameOver...");
+            Debug.Log(" Sin tiros y sin alcanzar la meta → Guardando resultado y GameOver");
+
+            if (FirebaseDataManager.Instance != null)
+            {
+                FirebaseDataManager.Instance.SaveGameScore(1, Oro);
+                Debug.Log($" Juego 1 guardado → Oro: {Oro}");
+            }
+
             SceneManager.LoadScene("GameOver");
             return;
         }
@@ -85,17 +91,17 @@ public class GameManager : MonoBehaviour
             // ⬆️ SUBE LA META AL ALCANZAR EL OBJETIVO
             puntosRequeridos += 2;
 
-            // 🔄 RESETEA LOS VALORES
+            //  RESETEA LOS VALORES
             puntosJugador = 0;
             ReiniciarTiros();
 
-            // 🧠 REFRESCA EL HUD
+            //  REFRESCA EL HUD
             uiManager?.ActualizarHUD();
 
-            // 🛒 ABRE LA TIENDA
+            //  ABRE LA TIENDA
             buttonManager.MostrarPanel1();
 
-            Debug.Log($"🎯 Meta alcanzada → nueva meta: {puntosRequeridos}");
+            Debug.Log($" Meta alcanzada → nueva meta: {puntosRequeridos}");
         }
 
 

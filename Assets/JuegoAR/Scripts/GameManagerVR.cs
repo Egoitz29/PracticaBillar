@@ -82,6 +82,17 @@ public class GameManagerVR : MonoBehaviour
         if (isGameOver) return;
         isGameOver = true;
 
+        //  GUARDAR RESULTADO EN FIREBASE (JUEGO 3)
+        if (FirebaseDataManager.Instance != null)
+        {
+            FirebaseDataManager.Instance.SaveGameScore(3, coins);
+            Debug.Log($" Juego 3 guardado → Coins: {coins}");
+        }
+        else
+        {
+            Debug.LogWarning(" FirebaseDataManager no disponible");
+        }
+
         // Parar rondas
         if (RoundManager.Instance != null)
             RoundManager.Instance.enabled = false;

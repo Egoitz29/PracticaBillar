@@ -11,32 +11,48 @@ public class GoogleAuthManager : MonoBehaviour
         auth = FirebaseAuth.DefaultInstance;
     }
 
-    // Llamar a este método desde un botón
+    // Este método se llama desde el botón
     public void LoginWithGoogle()
     {
         Debug.Log("BOTÓN PULSADO");
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-    string webClientId = "PEGA_AQUÍ_TU_WEB_CLIENT_ID";
+        string webClientId = "PEGA_AQUÍ_TU_WEB_CLIENT_ID";
 
-    using (AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
-    {
-        AndroidJavaObject activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
-
-        using (AndroidJavaClass bridge = new AndroidJavaClass("com.euneiz.googlesignin.GoogleSignInBridge"))
+        try
         {
-            bridge.CallStatic("startSignIn", activity, webClientId);
+            using (AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
+            {
+                AndroidJavaObject activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+
+                using (AndroidJavaClass bridge = new AndroidJavaClass("com.euneiz.googlesignin.GoogleSignInBridge"))
+                {
+                    bridge.CallStatic("startSignIn", activity, webClientId);
+                    Debug.Log("Llamada al puente Android realizada correctamente");
+                }
+            }
         }
-    }
+        catch (System.Exception e)
+        {
+            Debug.LogError("Error al llamar al puente Android: " + e.Message);
+        }
 #else
-        Debug.Log("Login con Google solo funciona en Android real");
+        // Mensaje en editor para confirmar que el botón funciona
+        Debug.Log("Simulación en Editor: botón funciona correctamente");
 #endif
     }
 
-
-    // ESTE método lo llama el puente Android
+    // Este método lo llama el puente Android cuando el login es exitoso
     public void OnGoogleSignInSuccess(string idToken)
     {
+        if (string.IsNullOrEmpty(idToken))
+        {
+            Debug.LogError("El idToken recibido está vacío");
+            return;
+        }
+
+        Debug.Log("idToken recibido: " + idToken);
+
         Credential credential = GoogleAuthProvider.GetCredential(idToken, null);
 
         auth.SignInWithCredentialAsync(credential).ContinueWithOnMainThread(task =>
@@ -54,8 +70,7 @@ public class GoogleAuthManager : MonoBehaviour
             }
 
             FirebaseUser user = task.Result;
-            Debug.Log("Usuario logueado: " + user.Email);
+            Debug.Log("Usuario logueado: " + user.DisplayName + " (" + user.Email + ")");
         });
-
     }
 }
