@@ -1,5 +1,6 @@
 using UnityEngine;
 using Firebase;
+using Firebase.Database;
 using Firebase.Extensions;
 
 public class FirebaseManager : MonoBehaviour
@@ -8,6 +9,8 @@ public class FirebaseManager : MonoBehaviour
 
     [Header("Estado Firebase")]
     public bool firebaseReady = false;
+
+    public FirebaseDatabase database;
 
     private void Awake()
     {
@@ -32,12 +35,16 @@ public class FirebaseManager : MonoBehaviour
             if (task.Result == DependencyStatus.Available)
             {
                 firebaseReady = true;
-                Debug.Log(" Firebase inicializado correctamente");
+                Debug.Log("Firebase inicializado correctamente");
+
+                // Inicializamos la base de datos con la URL de tu proyecto
+                string databaseUrl = "https://TU-PROYECTO.firebaseio.com";
+                database = FirebaseDatabase.GetInstance(databaseUrl);
             }
             else
             {
                 firebaseReady = false;
-                Debug.LogError(" Firebase no pudo inicializarse: " + task.Result);
+                Debug.LogError("Firebase no pudo inicializarse: " + task.Result);
             }
         });
     }

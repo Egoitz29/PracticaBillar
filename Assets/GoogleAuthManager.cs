@@ -6,12 +6,20 @@ public class GoogleAuthManager : MonoBehaviour
 {
     private FirebaseAuth auth;
 
+    [Header("Paneles a mostrar tras login")]
+    public GameObject panel1;
+    public GameObject panel2;
+
     void Start()
     {
         auth = FirebaseAuth.DefaultInstance;
+
+        // Ocultar los paneles al inicio
+        if (panel1 != null) panel1.SetActive(false);
+        if (panel2 != null) panel2.SetActive(false);
     }
 
-    // Este método se llama desde el botón
+    // Método llamado desde el botón
     public void LoginWithGoogle()
     {
         Debug.Log("BOTÓN PULSADO");
@@ -37,8 +45,8 @@ public class GoogleAuthManager : MonoBehaviour
             Debug.LogError("Error al llamar al puente Android: " + e.Message);
         }
 #else
-        // Mensaje en editor para confirmar que el botón funciona
         Debug.Log("Simulación en Editor: botón funciona correctamente");
+        OnLoginSuccess(); // Para probar en Editor
 #endif
     }
 
@@ -53,7 +61,7 @@ public class GoogleAuthManager : MonoBehaviour
 
         Debug.Log("idToken recibido: " + idToken);
 
-        Credential credential = GoogleAuthProvider.GetCredential(idToken, null);
+        var credential = GoogleAuthProvider.GetCredential(idToken, null);
 
         auth.SignInWithCredentialAsync(credential).ContinueWithOnMainThread(task =>
         {
@@ -69,8 +77,18 @@ public class GoogleAuthManager : MonoBehaviour
                 return;
             }
 
-            FirebaseUser user = task.Result;
+            var user = task.Result;
             Debug.Log("Usuario logueado: " + user.DisplayName + " (" + user.Email + ")");
+
+            // Mostrar paneles tras login exitoso
+            OnLoginSuccess();
         });
+    }
+
+    private void OnLoginSuccess()
+    {
+        if (panel1 != null) panel1.SetActive(true);
+        if (panel2 != null) panel2.SetActive(true);
+        Debug.Log("Paneles activados tras login");
     }
 }
